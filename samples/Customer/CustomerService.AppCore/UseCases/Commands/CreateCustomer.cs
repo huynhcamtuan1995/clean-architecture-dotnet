@@ -14,11 +14,10 @@ namespace CustomerService.AppCore.UseCases.Commands
 {
     public class CreateCustomer
     {
-        public record Command : ICreateCommand<Command.CreateCustomerModel, CustomerDto>
+        public record CreateCustomerModel(string FirstName, string LastName, string Email, Guid CountryId);
+        public record Command : ICreateCommand<CreateCustomerModel, CustomerDto>
         {
-            public CreateCustomerModel Model { get; init; } = default!;
-
-            public record CreateCustomerModel(string FirstName, string LastName, string Email, Guid CountryId);
+            public CreateCustomerModel Model { get; init; } = default(CreateCustomerModel)!;
 
             internal class Validator : AbstractValidator<Command>
             {
@@ -41,21 +40,23 @@ namespace CustomerService.AppCore.UseCases.Commands
 
             internal class Handler : IRequestHandler<Command, ResultModel<CustomerDto>>
             {
-                private readonly IRepository<Customer> _customerRepository;
                 private readonly ICountryApi _countryApi;
+                private readonly IRepository<Customer> _customerRepository;
 
                 public Handler(IRepository<Customer> customerRepository, ICountryApi countryApi)
                 {
-                    _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
+                    _customerRepository =
+                        customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
                     _countryApi = countryApi ?? throw new ArgumentNullException(nameof(countryApi));
                 }
 
                 public async Task<ResultModel<CustomerDto>> Handle(Command request,
                     CancellationToken cancellationToken)
                 {
-                    var alreadyRegisteredSpec = new CustomerAlreadyRegisteredSpec(request.Model.Email);
+                    CustomerAlreadyRegisteredSpec alreadyRegisteredSpec =
+                        new CustomerAlreadyRegisteredSpec(request.Model.Email);
 
-                    var existingCustomer = await _customerRepository.FindOneAsync(alreadyRegisteredSpec);
+                    Customer? existingCustomer = await _customerRepository.FindOneAsync(alreadyRegisteredSpec);
 
                     if (existingCustomer != null)
                     {
@@ -63,17 +64,19 @@ namespace CustomerService.AppCore.UseCases.Commands
                     }
 
                     // check country is exists and valid
-                    var (countryDto, isError, _) = await _countryApi.GetCountryByIdAsync(request.Model.CountryId);
+                    (CountryDto countryDto, bool isError, _) =
+                        await _countryApi.GetCountryByIdAsync(request.Model.CountryId);
                     if (isError || countryDto.Id.Equals(Guid.Empty))
                     {
                         throw new Exception("Country Id is not valid.");
                     }
 
-                    var customer = Customer.Create(request.Model.FirstName, request.Model.LastName, request.Model.Email, request.Model.CountryId);
+                    Customer customer = Customer.Create(request.Model.FirstName, request.Model.LastName,
+                        request.Model.Email, request.Model.CountryId);
 
                     //customer.AddDomainEvent(new CustomerCreatedIntegrationEvent());
 
-                    var created = await _customerRepository.AddAsync(customer);
+                    Customer? created = await _customerRepository.AddAsync(customer);
 
                     return ResultModel<CustomerDto>.Create(new CustomerDto
                     {

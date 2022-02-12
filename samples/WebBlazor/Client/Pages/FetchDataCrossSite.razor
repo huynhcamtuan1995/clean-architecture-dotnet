@@ -1,4 +1,4 @@
-﻿@page "/fetchdataCrossSite"
+@page "/fetchdataCrossSite"
 @inject HttpClient Http
 
 <h1>Weather forecast</h1>
@@ -7,13 +7,15 @@
 
 @if (data == null)
 {
-    <p><em>Loading...</em></p>
+    <p>
+        <em>Loading...</em>
+    </p>
 }
 else
 {
     <pre>
         @data
-    </pre>
+        </pre>
 }
 
 @code {
@@ -21,11 +23,10 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var response = await Http.GetStringAsync("api/foo");
-        var foo = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(response);
+        string response = await Http.GetStringAsync("api/foo");
+        Dictionary<string, JsonElement> foo = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(response);
 
         data = JsonSerializer.Serialize(foo, new JsonSerializerOptions { WriteIndented = true });
-
     }
 
 }

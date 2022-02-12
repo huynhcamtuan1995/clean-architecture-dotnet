@@ -11,9 +11,10 @@ namespace N8T.Infrastructure.ServiceInvocation.Dapr
     {
         public static IServiceCollection AddDaprClient(this IServiceCollection services)
         {
-            var options = new JsonSerializerOptions
+            JsonSerializerOptions options = new JsonSerializerOptions
             {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase, PropertyNameCaseInsensitive = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                PropertyNameCaseInsensitive = true
             };
 
             services.AddSingleton(options);
@@ -26,10 +27,13 @@ namespace N8T.Infrastructure.ServiceInvocation.Dapr
             return services;
         }
 
-        public static IServiceCollection AddRestClient(this IServiceCollection services,
-            Type httpClientApi, string appName = "localhost", int appPort = 5000)
+        public static IServiceCollection AddRestClient(
+            this IServiceCollection services,
+            Type httpClientApi,
+            string appName = "localhost",
+            int appPort = 5000)
         {
-            var appUri = $"http://{appName}:{appPort}";
+            string appUri = $"http://{appName}:{appPort}";
 
             services.AddScoped<InvocationHandler>();
             services.AddRestEaseClient(httpClientApi, appUri, client =>

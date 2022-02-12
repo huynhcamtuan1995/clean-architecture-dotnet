@@ -12,7 +12,7 @@ namespace SettingService.Infrastructure.Data
         {
         }
 
-        public DbSet<Country> Countries { get; set; } = default!;
+        public DbSet<Country> Countries { get; set; } = default(DbSet<Country>)!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

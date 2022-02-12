@@ -21,9 +21,9 @@ namespace N8T.Core.Specification
         {
             get
             {
-                var objParam = Expression.Parameter(typeof(T), "obj");
+                ParameterExpression objParam = Expression.Parameter(typeof(T), "obj");
 
-                var newExpr = Expression.Lambda<Func<T, bool>>(
+                Expression<Func<T, bool>> newExpr = Expression.Lambda<Func<T, bool>>(
                     Expression.OrElse(
                         Expression.Invoke(_left.Criteria, objParam),
                         Expression.Invoke(_right.Criteria, objParam)

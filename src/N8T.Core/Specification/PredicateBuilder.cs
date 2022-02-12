@@ -2,28 +2,29 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace N8T.Core.Specification
 {
     /// <summary>
-    /// https://codereview.stackexchange.com/questions/166460/chaining-multiple-predicates
+    ///     https://codereview.stackexchange.com/questions/166460/chaining-multiple-predicates
     /// </summary>
     public static class PredicateBuilder
     {
         public static Expression<Func<T, bool>> Build<T>(string propertyName, string comparison, string value)
         {
             const string parameterName = "x";
-            var parameter = Expression.Parameter(typeof(T), parameterName);
-            var left = propertyName.Split('.').Aggregate((Expression)parameter, Expression.Property);
-            var body = MakeComparison(left, comparison, value);
+            ParameterExpression parameter = Expression.Parameter(typeof(T), parameterName);
+            Expression left = propertyName.Split('.').Aggregate((Expression)parameter, Expression.Property);
+            Expression body = MakeComparison(left, comparison, value);
             return Expression.Lambda<Func<T, bool>>(body, parameter);
         }
 
         public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> a, Expression<Func<T, bool>> b)
         {
-            var p = a.Parameters[0];
+            ParameterExpression p = a.Parameters[0];
 
-            var visitor = new SubstExpressionVisitor();
+            SubstExpressionVisitor visitor = new SubstExpressionVisitor();
             visitor.subst[b.Parameters[0]] = p;
 
             Expression body = Expression.And(a.Body, visitor.Visit(b.Body));
@@ -32,9 +33,9 @@ namespace N8T.Core.Specification
 
         public static Expression<Func<T, bool>> Or<T>(this Expression<Func<T, bool>> a, Expression<Func<T, bool>> b)
         {
-            var p = a.Parameters[0];
+            ParameterExpression p = a.Parameters[0];
 
-            var visitor = new SubstExpressionVisitor();
+            SubstExpressionVisitor visitor = new SubstExpressionVisitor();
             visitor.subst[b.Parameters[0]] = p;
 
             Expression body = Expression.Or(a.Body, visitor.Visit(b.Body));
@@ -54,17 +55,17 @@ namespace N8T.Core.Specification
                 "Contains" or "StartsWith" or "EndsWith" => Expression.Call(MakeString(left), comparison,
                     Type.EmptyTypes, Expression.Constant(value, typeof(string))),
                 "In" => MakeList(left, value.Split(',')),
-                _ => throw new NotSupportedException($"Invalid comparison operator '{comparison}'."),
+                _ => throw new NotSupportedException($"Invalid comparison operator '{comparison}'.")
             };
         }
 
         private static Expression MakeList(Expression left, IEnumerable<string> codes)
         {
-            var objValues = codes.Cast<object>().ToList();
-            var type = typeof(List<object>);
-            var methodInfo = type.GetMethod("Contains", new Type[] {typeof(object)});
-            var list = Expression.Constant(objValues);
-            var body = Expression.Call(list, methodInfo, left);
+            List<object> objValues = codes.Cast<object>().ToList();
+            Type type = typeof(List<object>);
+            MethodInfo methodInfo = type.GetMethod("Contains", new[] { typeof(object) });
+            ConstantExpression list = Expression.Constant(objValues);
+            MethodCallExpression body = Expression.Call(list, methodInfo, left);
             return body;
         }
 
@@ -82,28 +83,30 @@ namespace N8T.Core.Specification
                 {
                     typedValue = null;
                     if (Nullable.GetUnderlyingType(left.Type) == null)
+                    {
                         left = Expression.Convert(left, typeof(Nullable<>).MakeGenericType(left.Type));
+                    }
                 }
                 else
                 {
-                    var valueType = Nullable.GetUnderlyingType(left.Type) ?? left.Type;
+                    Type valueType = Nullable.GetUnderlyingType(left.Type) ?? left.Type;
                     typedValue = valueType.IsEnum ? Enum.Parse(valueType, value) :
                         valueType == typeof(Guid) ? Guid.Parse(value) :
                         Convert.ChangeType(value, valueType);
                 }
             }
 
-            var right = Expression.Constant(typedValue, left.Type);
+            ConstantExpression right = Expression.Constant(typedValue, left.Type);
             return Expression.MakeBinary(type, left, right);
         }
 
         private class SubstExpressionVisitor : ExpressionVisitor
         {
-            public readonly Dictionary<Expression, Expression> subst = new();
+            public readonly Dictionary<Expression, Expression> subst = new Dictionary<Expression, Expression>();
 
             protected override Expression VisitParameter(ParameterExpression node)
             {
-                return subst.TryGetValue(node, out var newValue) ? newValue : node;
+                return subst.TryGetValue(node, out Expression newValue) ? newValue : node;
             }
         }
     }

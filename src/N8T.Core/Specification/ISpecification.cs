@@ -9,12 +9,12 @@ namespace N8T.Core.Specification
     }
 
     /// <summary>
-    /// https://stackoverflow.com/questions/63082758/ef-core-specification-pattern-add-all-column-for-sorting-data-with-custom-specif
+    ///     https://stackoverflow.com/questions/63082758/ef-core-specification-pattern-add-all-column-for-sorting-data-with-custom-specif
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public interface ISpecification<T> : IRootSpecification
     {
-        Expression<Func<T, bool>> Criteria  { get; }
+        Expression<Func<T, bool>> Criteria { get; }
         List<Expression<Func<T, object>>> Includes { get; }
         List<string> IncludeStrings { get; }
         Expression<Func<T, object>> OrderBy { get; }
@@ -27,10 +27,10 @@ namespace N8T.Core.Specification
 
         bool IsSatisfiedBy(T obj);
     }
-    
+
     public interface IGridSpecification<T> : IRootSpecification
     {
-        List<Expression<Func<T, bool>>> Criterias  { get; }
+        List<Expression<Func<T, bool>>> Criterias { get; }
         List<Expression<Func<T, object>>> Includes { get; }
         List<string> IncludeStrings { get; }
         Expression<Func<T, object>> OrderBy { get; }

@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
@@ -16,14 +17,17 @@ namespace N8T.Infrastructure.Status
 
         public static StatusModel BuildAppStatusModel(this IConfiguration config)
         {
-            var model = new StatusModel
+            StatusModel model = new StatusModel
             {
                 AppName = PlatformServices.Default.Application.ApplicationName,
                 AppVersion = PlatformServices.Default.Application.ApplicationVersion,
                 BasePath = PlatformServices.Default.Application.ApplicationBasePath
             };
 
-            foreach (var env in config.GetChildren()) model.Envs.Add(env.Key, env.Value);
+            foreach (IConfigurationSection env in config.GetChildren())
+            {
+                model.Envs.Add(env.Key, env.Value);
+            }
 
             model.OsArchitecture = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
                 ? RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
@@ -48,7 +52,7 @@ namespace N8T.Infrastructure.Status
 
             model.HostName = Dns.GetHostName();
             model.IpAddress = Dns.GetHostAddresses(Dns.GetHostName())
-                .Where(ip => ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                .Where(ip => ip.AddressFamily == AddressFamily.InterNetwork)
                 .Aggregate(" ", (a, b) => $"{a} {b}");
 
             return model;

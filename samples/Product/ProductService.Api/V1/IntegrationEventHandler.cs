@@ -26,7 +26,7 @@ namespace ProductService.Application.V1
 #pragma warning disable 1998
         public async Task<ActionResult> HandleCustomerCreatedAsync(CustomerCreatedIntegrationEvent @event,
 #pragma warning restore 1998
-            CancellationToken cancellationToken = new())
+            CancellationToken cancellationToken = new CancellationToken())
         {
             _logger.LogInformation($"I received the message with name={@event.GetType().FullName}");
 

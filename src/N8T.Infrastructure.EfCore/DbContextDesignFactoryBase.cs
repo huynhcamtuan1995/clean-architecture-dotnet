@@ -11,12 +11,12 @@ namespace N8T.Infrastructure.EfCore
     {
         public TDbContext CreateDbContext(string[] args)
         {
-            var connString = ConfigurationHelper.GetConfiguration(AppContext.BaseDirectory)
+            string connString = ConfigurationHelper.GetConfiguration(AppContext.BaseDirectory)
                 ?.GetConnectionString("postgres");
 
             Console.WriteLine($"Connection String: {connString}");
 
-            var optionsBuilder = new DbContextOptionsBuilder<TDbContext>()
+            DbContextOptionsBuilder<TDbContext> optionsBuilder = new DbContextOptionsBuilder<TDbContext>()
                 .UseNpgsql(
                     connString ?? throw new InvalidOperationException(),
                     sqlOptions =>

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -14,8 +15,8 @@ namespace N8T.Infrastructure.Auth
         where TRequest : notnull, IRequest<TResponse>
         where TResponse : notnull
     {
-        private readonly IAuthorizationService _authorizationService;
         private readonly IEnumerable<IAuthorizationRequirement> _authorizationRequirements;
+        private readonly IAuthorizationService _authorizationService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILogger<AuthBehavior<TRequest, TResponse>> _logger;
 
@@ -25,8 +26,10 @@ namespace N8T.Infrastructure.Auth
             IHttpContextAccessor httpContextAccessor,
             ILogger<AuthBehavior<TRequest, TResponse>> logger)
         {
-            _authorizationService = authorizationService ?? throw new ArgumentNullException(nameof(authorizationService));
-            _authorizationRequirements = authorizationRequirements ?? throw new ArgumentNullException(nameof(authorizationRequirements));
+            _authorizationService =
+                authorizationService ?? throw new ArgumentNullException(nameof(authorizationService));
+            _authorizationRequirements = authorizationRequirements ??
+                                         throw new ArgumentNullException(nameof(authorizationRequirements));
             _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -40,13 +43,13 @@ namespace N8T.Infrastructure.Auth
             }
 
             _logger.LogInformation("[{Prefix}] Starting AuthBehavior", nameof(AuthBehavior<TRequest, TResponse>));
-            var currentUser = _httpContextAccessor.HttpContext?.User;
+            ClaimsPrincipal currentUser = _httpContextAccessor.HttpContext?.User;
             if (currentUser == null)
             {
                 throw new Exception("You need to login.");
             }
 
-            var result = await _authorizationService.AuthorizeAsync(
+            AuthorizationResult result = await _authorizationService.AuthorizeAsync(
                 _httpContextAccessor.HttpContext.User,
                 null,
                 _authorizationRequirements.Where(x => x is TRequest));

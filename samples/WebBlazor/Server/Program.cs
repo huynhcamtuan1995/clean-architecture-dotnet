@@ -22,7 +22,10 @@ namespace Blazor.Server
                 .MinimumLevel.Override("IdentityModel", LogEventLevel.Debug)
                 .MinimumLevel.Override("Duende.Bff", LogEventLevel.Debug)
                 .Enrich.FromLogContext()
-                .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Code)
+                .WriteTo.Console(
+                    outputTemplate:
+                    "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}",
+                    theme: AnsiConsoleTheme.Code)
                 .CreateLogger();
 
             try

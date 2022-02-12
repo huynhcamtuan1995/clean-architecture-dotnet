@@ -11,8 +11,8 @@ namespace N8T.Infrastructure.Bus.Dapr.Internal
     internal class DaprEventBus : IEventBus
     {
         private readonly DaprClient _daprClient;
-        private readonly IOptions<DaprEventBusOptions> _options;
         private readonly ILogger<DaprEventBus> _logger;
+        private readonly IOptions<DaprEventBusOptions> _options;
 
         public DaprEventBus(DaprClient daprClient, IOptions<DaprEventBusOptions> options, ILogger<DaprEventBus> logger)
         {
@@ -21,13 +21,13 @@ namespace N8T.Infrastructure.Bus.Dapr.Internal
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task PublishAsync<TEvent>(TEvent @event, string[] topics = default,
-            CancellationToken token = default) where TEvent : IDomainEvent
+        public async Task PublishAsync<TEvent>(TEvent @event, string[] topics = default(string[]),
+            CancellationToken token = default(CancellationToken)) where TEvent : IDomainEvent
         {
-            var attr = (DaprPubSubNameAttribute)Attribute.GetCustomAttribute(typeof(TEvent),
+            DaprPubSubNameAttribute attr = (DaprPubSubNameAttribute)Attribute.GetCustomAttribute(typeof(TEvent),
                 typeof(DaprPubSubNameAttribute));
 
-            var pubsubName = _options.Value.PubSubName ?? "pubsub";
+            string pubsubName = _options.Value.PubSubName ?? "pubsub";
 
             if (attr is not null)
             {
@@ -36,14 +36,15 @@ namespace N8T.Infrastructure.Bus.Dapr.Internal
 
             if (topics is null)
             {
-                var topicName = @event.GetType().Name;
+                string topicName = @event.GetType().Name;
 
-                _logger.LogInformation("Publishing event {@Event} to {PubsubName}.{TopicName}", @event, pubsubName, topicName);
+                _logger.LogInformation("Publishing event {@Event} to {PubsubName}.{TopicName}", @event, pubsubName,
+                    topicName);
                 await _daprClient.PublishEventAsync(pubsubName, topicName, @event, token);
             }
             else
             {
-                foreach (var topicName in topics)
+                foreach (string topicName in topics)
                 {
                     _logger.LogInformation("Publishing event {@Event} to {PubsubName}.{TopicName}", @event, pubsubName,
                         topicName);
@@ -52,9 +53,10 @@ namespace N8T.Infrastructure.Bus.Dapr.Internal
             }
         }
 
-        public Task SubscribeAsync<TMessage>(string[] topics = default, CancellationToken token = default) where TMessage : IDomainEvent
+        public Task SubscribeAsync<TMessage>(string[] topics = default(string[]),
+            CancellationToken token = default(CancellationToken)) where TMessage : IDomainEvent
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }

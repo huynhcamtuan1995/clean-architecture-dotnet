@@ -11,12 +11,13 @@ namespace SettingService.Application.V1
     [ApiVersion("1.0")]
     public class SettingController : BaseController
     {
-        [ApiVersion( "1.0" )]
+        [ApiVersion("1.0")]
         [HttpGet("/api/v{version:apiVersion}/countries/{id:guid}")]
-        public async Task<ActionResult<CountryDto>> HandleAsync(Guid id,
-            CancellationToken cancellationToken = new())
+        public async Task<ActionResult<CountryDto>> HandleGetCountryByIdAsync(
+            Guid id,
+            CancellationToken cancellationToken = new CancellationToken())
         {
-            var request = new GetCountryById.Query {Id = id};
+            GetCountryById.Query request = new GetCountryById.Query { Id = id };
 
             return Ok(await Mediator.Send(request, cancellationToken));
         }

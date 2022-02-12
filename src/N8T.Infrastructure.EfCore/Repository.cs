@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using N8T.Core.Domain;
@@ -20,6 +21,21 @@ namespace N8T.Infrastructure.EfCore
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
+        public async ValueTask<long> CountAsync(IGridSpecification<TEntity> spec)
+        {
+            spec.IsPagingEnabled = false;
+            IQueryable<TEntity> specificationResult = GetQuery(_dbContext.Set<TEntity>(), spec);
+
+            return await ValueTask.FromResult(specificationResult.LongCount());
+        }
+
+        public async Task<List<TEntity>> FindAsync(IGridSpecification<TEntity> spec)
+        {
+            IQueryable<TEntity> specificationResult = GetQuery(_dbContext.Set<TEntity>(), spec);
+
+            return await specificationResult.ToListAsync();
+        }
+
         public TEntity FindById(Guid id)
         {
             return _dbContext.Set<TEntity>().SingleOrDefault(e => e.Id == id);
@@ -27,29 +43,14 @@ namespace N8T.Infrastructure.EfCore
 
         public async Task<TEntity> FindOneAsync(ISpecification<TEntity> spec)
         {
-            var specificationResult = GetQuery(_dbContext.Set<TEntity>(), spec);
+            IQueryable<TEntity> specificationResult = GetQuery(_dbContext.Set<TEntity>(), spec);
 
             return await specificationResult.FirstOrDefaultAsync();
         }
 
         public async Task<List<TEntity>> FindAsync(ISpecification<TEntity> spec)
         {
-            var specificationResult = GetQuery(_dbContext.Set<TEntity>(), spec);
-
-            return await specificationResult.ToListAsync();
-        }
-
-        public async ValueTask<long> CountAsync(IGridSpecification<TEntity> spec)
-        {
-            spec.IsPagingEnabled = false;
-            var specificationResult = GetQuery(_dbContext.Set<TEntity>(), spec);
-
-            return await ValueTask.FromResult(specificationResult.LongCount());
-        }
-
-        public async Task<List<TEntity>> FindAsync(IGridSpecification<TEntity> spec)
-        {
-            var specificationResult = GetQuery(_dbContext.Set<TEntity>(), spec);
+            IQueryable<TEntity> specificationResult = GetQuery(_dbContext.Set<TEntity>(), spec);
 
             return await specificationResult.ToListAsync();
         }
@@ -73,7 +74,7 @@ namespace N8T.Infrastructure.EfCore
         private static IQueryable<TEntity> GetQuery(IQueryable<TEntity> inputQuery,
             ISpecification<TEntity> specification)
         {
-            var query = inputQuery;
+            IQueryable<TEntity> query = inputQuery;
 
             if (specification.Criteria is not null)
             {
@@ -110,12 +111,12 @@ namespace N8T.Infrastructure.EfCore
         private static IQueryable<TEntity> GetQuery(IQueryable<TEntity> inputQuery,
             IGridSpecification<TEntity> specification)
         {
-            var query = inputQuery;
+            IQueryable<TEntity> query = inputQuery;
 
             if (specification.Criterias is not null && specification.Criterias.Count > 0)
             {
-                var expr = specification.Criterias.First();
-                for (var i = 1; i < specification.Criterias.Count; i++)
+                Expression<Func<TEntity, bool>> expr = specification.Criterias.First();
+                for (int i = 1; i < specification.Criterias.Count; i++)
                 {
                     expr = expr.And(specification.Criterias[i]);
                 }

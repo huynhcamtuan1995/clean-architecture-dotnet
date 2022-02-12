@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using CoolStore.AppContracts;
 using CoolStore.AppContracts.RestApi;
 using CustomerService.Infrastructure.Data;
@@ -11,10 +11,10 @@ using Microsoft.Extensions.Hosting;
 using N8T.Infrastructure;
 using N8T.Infrastructure.Bus;
 using N8T.Infrastructure.EfCore;
+using N8T.Infrastructure.ServiceInvocation.Dapr;
 using N8T.Infrastructure.Swagger;
 using N8T.Infrastructure.TransactionalOutbox;
 using N8T.Infrastructure.Validator;
-using N8T.Infrastructure.ServiceInvocation.Dapr;
 using AppCoreAnchor = CustomerService.AppCore.Anchor;
 
 namespace CustomerService.Infrastructure
@@ -36,8 +36,8 @@ namespace CustomerService.Infrastructure
             });
 
             services.AddHttpContextAccessor();
-            services.AddCustomMediatR(new[] {typeof(AppCoreAnchor)});
-            services.AddCustomValidators(new[] {typeof(AppCoreAnchor)});
+            services.AddCustomMediatR(new[] { typeof(AppCoreAnchor) });
+            services.AddCustomValidators(new[] { typeof(AppCoreAnchor) });
             services.AddDaprClient();
             services.AddControllers().AddMessageBroker(config);
             services.AddTransactionalOutbox(config);
@@ -71,7 +71,7 @@ namespace CustomerService.Infrastructure
                 endpoints.MapDefaultControllerRoute();
             });
 
-            var provider = app.Services.GetService<IApiVersionDescriptionProvider>();
+            IApiVersionDescriptionProvider? provider = app.Services.GetService<IApiVersionDescriptionProvider>();
             return app.UseSwagger(provider);
         }
     }

@@ -30,22 +30,26 @@ namespace N8T.Core.Specification
             string orderByDescendingMethodName,
             string groupByMethodName)
         {
-            if (string.IsNullOrEmpty(sort)) return;
+            if (string.IsNullOrEmpty(sort))
+            {
+                return;
+            }
 
             const string descendingSuffix = "Desc";
 
-            var descending = sort.EndsWith(descendingSuffix, StringComparison.Ordinal);
-            var propertyName = sort.Substring(0, 1).ToUpperInvariant() +
-                               sort.Substring(1, sort.Length - 1 - (descending ? descendingSuffix.Length : 0));
+            bool descending = sort.EndsWith(descendingSuffix, StringComparison.Ordinal);
+            string propertyName = sort.Substring(0, 1).ToUpperInvariant() +
+                                  sort.Substring(1, sort.Length - 1 - (descending ? descendingSuffix.Length : 0));
 
-            var specificationType = gridSpec.GetType().BaseType;
-            var targetType = specificationType?.GenericTypeArguments[0];
-            var property = targetType!.GetRuntimeProperty(propertyName) ??
-                           throw new InvalidOperationException($"Because the property {propertyName} does not exist it cannot be sorted.");
+            Type specificationType = gridSpec.GetType().BaseType;
+            Type targetType = specificationType?.GenericTypeArguments[0];
+            PropertyInfo property = targetType!.GetRuntimeProperty(propertyName) ??
+                                    throw new InvalidOperationException(
+                                        $"Because the property {propertyName} does not exist it cannot be sorted.");
 
-            var lambdaParamX = Expression.Parameter(targetType, "x");
+            ParameterExpression lambdaParamX = Expression.Parameter(targetType, "x");
 
-            var propertyReturningExpression = Expression.Lambda(
+            LambdaExpression propertyReturningExpression = Expression.Lambda(
                 Expression.Convert(
                     Expression.Property(lambdaParamX, property),
                     typeof(object)),
@@ -56,14 +60,14 @@ namespace N8T.Core.Specification
                 specificationType?.GetMethod(
                         orderByDescendingMethodName,
                         BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                    ?.Invoke(gridSpec, new object[]{propertyReturningExpression});
+                    ?.Invoke(gridSpec, new object[] { propertyReturningExpression });
             }
             else
             {
                 specificationType?.GetMethod(
                         groupByMethodName,
                         BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                    ?.Invoke(gridSpec, new object[]{propertyReturningExpression});
+                    ?.Invoke(gridSpec, new object[] { propertyReturningExpression });
             }
         }
     }

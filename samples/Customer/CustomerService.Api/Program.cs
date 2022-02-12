@@ -1,11 +1,22 @@
-using Microsoft.AspNetCore.Builder;
 using CustomerService.Infrastructure;
+using Microsoft.AspNetCore.Builder;
 using ApiAnchor = CustomerService.Application.V1.Anchor;
 
-var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddCoreServices(builder.Configuration, builder.Environment, typeof(ApiAnchor));
+namespace CustomerService.Application
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddCoreServices(builder.Configuration, builder.Environment, typeof(ApiAnchor));
 
-var app = builder.Build();
-app.UseCoreApplication(builder.Environment);
+            WebApplication app = builder.Build();
+            app.UseCoreApplication(builder.Environment);
 
-app.Run();
+            app.Run();
+        }
+    }
+}
+
+

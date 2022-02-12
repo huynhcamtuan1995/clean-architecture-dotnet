@@ -12,8 +12,8 @@ namespace N8T.Infrastructure.EfCore.Internal
 {
     internal class DbContextMigratorHostedService : IHostedService
     {
-        private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<DbContextMigratorHostedService> _logger;
+        private readonly IServiceProvider _serviceProvider;
 
         public DbContextMigratorHostedService(IServiceProvider serviceProvider,
             ILogger<DbContextMigratorHostedService> logger)
@@ -24,11 +24,11 @@ namespace N8T.Infrastructure.EfCore.Internal
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            var policy = CreatePolicy(3, _logger, nameof(DbContextMigratorHostedService));
+            AsyncRetryPolicy policy = CreatePolicy(3, _logger, nameof(DbContextMigratorHostedService));
             await policy.ExecuteAsync(async () =>
             {
-                using var scope = _serviceProvider.CreateScope();
-                var dbFacadeResolver = scope.ServiceProvider.GetRequiredService<IDbFacadeResolver>();
+                using IServiceScope scope = _serviceProvider.CreateScope();
+                IDbFacadeResolver dbFacadeResolver = scope.ServiceProvider.GetRequiredService<IDbFacadeResolver>();
 
                 if (!await dbFacadeResolver.Database.CanConnectAsync(cancellationToken))
                 {
@@ -40,7 +40,10 @@ namespace N8T.Infrastructure.EfCore.Internal
             });
         }
 
-        public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
 
         private static AsyncRetryPolicy CreatePolicy(int retries, ILogger logger, string prefix)
         {

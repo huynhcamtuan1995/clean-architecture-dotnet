@@ -18,24 +18,26 @@ namespace ProductService.Application.V1
     {
         [HttpGet("/api/v{version:apiVersion}/products/{id:guid}")]
         public async Task<ActionResult<ProductDto>> HandleGetProductByIdAsync(Guid id,
-            CancellationToken cancellationToken = new())
+            CancellationToken cancellationToken = new CancellationToken())
         {
-            var request = new GetProductById.Query { Id = id };
+            GetProductById.Query request = new GetProductById.Query { Id = id };
 
             return Ok(await Mediator.Send(request, cancellationToken));
         }
 
         [HttpGet("/api/v{version:apiVersion}/products")]
         public async Task<ActionResult> HandleGetProductsAsync([FromHeader(Name = "x-query")] string query,
-            CancellationToken cancellationToken = new())
+            CancellationToken cancellationToken = new CancellationToken())
         {
-            var queryModel = HttpContext.SafeGetListQuery<GetProducts.Query, ListResultModel<ProductDto>>(query);
+            GetProducts.Query queryModel =
+                HttpContext.SafeGetListQuery<GetProducts.Query, ListResultModel<ProductDto>>(query);
 
             return Ok(await Mediator.Send(queryModel, cancellationToken));
         }
 
         [HttpPost("/api/v{version:apiVersion}/products")]
-        public async Task<ActionResult> HandleCreateProductAsync([FromBody] CreateProduct.Command request, CancellationToken cancellationToken = new())
+        public async Task<ActionResult> HandleCreateProductAsync([FromBody] CreateProduct.Command request,
+            CancellationToken cancellationToken = new CancellationToken())
         {
             return Ok(await Mediator.Send(request, cancellationToken));
         }

@@ -16,7 +16,7 @@ namespace ProductService.AppCore.UseCases.Queries
     {
         public record Query : IItemQuery<Guid, ProductDto>
         {
-            public List<string> Includes { get; init; } = new(new[] {"Returns", "Code"});
+            public List<string> Includes { get; init; } = new List<string>(new[] { "Returns", "Code" });
             public Guid Id { get; init; }
 
             internal class Validator : AbstractValidator<Query>
@@ -35,17 +35,21 @@ namespace ProductService.AppCore.UseCases.Queries
 
                 public Handler(IRepository<Product> productRepository)
                 {
-                    _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
+                    _productRepository =
+                        productRepository ?? throw new ArgumentNullException(nameof(productRepository));
                 }
 
                 public async Task<ResultModel<ProductDto>> Handle(Query request,
                     CancellationToken cancellationToken)
                 {
-                    if (request == null) throw new ArgumentNullException(nameof(request));
+                    if (request == null)
+                    {
+                        throw new ArgumentNullException(nameof(request));
+                    }
 
-                    var spec = new ProductByIdQuerySpec<ProductDto>(request);
+                    ProductByIdQuerySpec<ProductDto> spec = new ProductByIdQuerySpec<ProductDto>(request);
 
-                    var product = await _productRepository.FindOneAsync(spec);
+                    Product? product = await _productRepository.FindOneAsync(spec);
 
                     return ResultModel<ProductDto>.Create(new ProductDto
                     {

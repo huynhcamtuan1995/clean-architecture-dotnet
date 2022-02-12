@@ -14,8 +14,8 @@ namespace N8T.Infrastructure.Validator
         where TRequest : notnull, IRequest<TResponse>
         where TResponse : notnull
     {
-        private readonly IValidator<TRequest> _validator;
         private readonly ILogger<RequestValidationBehavior<TRequest, TResponse>> _logger;
+        private readonly IValidator<TRequest> _validator;
 
         public RequestValidationBehavior(IValidator<TRequest> validator,
             ILogger<RequestValidationBehavior<TRequest, TResponse>> logger)
@@ -36,7 +36,7 @@ namespace N8T.Infrastructure.Validator
 
             await _validator.HandleValidation(request);
 
-            var response = await next();
+            TResponse response = await next();
 
             _logger.LogInformation($"Handled {typeof(TRequest).FullName}");
             return response;

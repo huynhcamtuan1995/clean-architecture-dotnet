@@ -7,8 +7,8 @@ namespace N8T.Infrastructure.Logging
 {
     internal class TraceIdEnricher : ILogEventEnricher
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
         public const string DefaultPropertyName = "TraceId";
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         private readonly string _traceIdName;
 
@@ -25,8 +25,8 @@ namespace N8T.Infrastructure.Logging
 
         public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
         {
-            var traceId = Activity.Current?.TraceId.ToString() ?? _httpContextAccessor?.HttpContext?.TraceIdentifier;
-            var versionProperty = propertyFactory.CreateProperty(_traceIdName, traceId);
+            string traceId = Activity.Current?.TraceId.ToString() ?? _httpContextAccessor?.HttpContext?.TraceIdentifier;
+            LogEventProperty versionProperty = propertyFactory.CreateProperty(_traceIdName, traceId);
             logEvent.AddPropertyIfAbsent(versionProperty);
         }
     }

@@ -6,7 +6,7 @@ namespace ProductService.AppCore.Core
 {
     public class ProductCode : EntityRootBase
     {
-        public string Name { get; private init; } = default!;
+        public string Name { get; private init; } = default(string)!;
 
         public static ProductCode Create(string name)
         {
@@ -15,7 +15,7 @@ namespace ProductService.AppCore.Core
 
         public static ProductCode Create(Guid id, string name)
         {
-            ProductCode productCode = new() {Id = id, Name = name};
+            ProductCode productCode = new ProductCode { Id = id, Name = name };
 
             productCode.AddDomainEvent(new ProductCodeCreatedIntegrationEvent
             {

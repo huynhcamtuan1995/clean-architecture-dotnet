@@ -17,9 +17,9 @@ namespace ProductService.AppCore.UseCases.Queries
     {
         public class Query : IListQuery<ListResultModel<ProductDto>>
         {
-            public List<string> Includes { get; init; } = new(new[] {"Returns", "Code"});
-            public List<FilterModel> Filters { get; init; } = new();
-            public List<string> Sorts { get; init; } = new();
+            public List<string> Includes { get; init; } = new List<string>(new[] { "Returns", "Code" });
+            public List<FilterModel> Filters { get; init; } = new List<FilterModel>();
+            public List<string> Sorts { get; init; } = new List<string>();
             public int Page { get; init; } = 1;
             public int PageSize { get; init; } = 20;
 
@@ -35,7 +35,7 @@ namespace ProductService.AppCore.UseCases.Queries
                 }
             }
 
-            internal class Handler : IRequestHandler<Query, N8T.Core.Domain.ResultModel<ListResultModel<ProductDto>>>
+            internal class Handler : IRequestHandler<Query, ResultModel<ListResultModel<ProductDto>>>
             {
                 private readonly IGridRepository<Product> _productRepository;
 
@@ -45,16 +45,19 @@ namespace ProductService.AppCore.UseCases.Queries
                         productRepository ?? throw new ArgumentNullException(nameof(productRepository));
                 }
 
-                public async Task<N8T.Core.Domain.ResultModel<ListResultModel<ProductDto>>> Handle(Query request,
+                public async Task<ResultModel<ListResultModel<ProductDto>>> Handle(Query request,
                     CancellationToken cancellationToken)
                 {
-                    if (request == null) throw new ArgumentNullException(nameof(request));
+                    if (request == null)
+                    {
+                        throw new ArgumentNullException(nameof(request));
+                    }
 
-                    var spec = new ProductListQuerySpec<ProductDto>(request);
+                    ProductListQuerySpec<ProductDto> spec = new ProductListQuerySpec<ProductDto>(request);
 
-                    var products = await _productRepository.FindAsync(spec);
+                    List<Product>? products = await _productRepository.FindAsync(spec);
 
-                    var productModels = products.Select(x => new ProductDto
+                    IEnumerable<ProductDto> productModels = products.Select(x => new ProductDto
                     {
                         Id = x.Id,
                         Name = x.Name,
@@ -66,12 +69,12 @@ namespace ProductService.AppCore.UseCases.Queries
                         ProductCodeId = x.ProductCodeId
                     });
 
-                    var totalProducts = await _productRepository.CountAsync(spec);
+                    long totalProducts = await _productRepository.CountAsync(spec);
 
-                    var resultModel = ListResultModel<ProductDto>.Create(
+                    ListResultModel<ProductDto>? resultModel = ListResultModel<ProductDto>.Create(
                         productModels.ToList(), totalProducts, request.Page, request.PageSize);
 
-                    return N8T.Core.Domain.ResultModel<ListResultModel<ProductDto>>.Create(resultModel);
+                    return ResultModel<ListResultModel<ProductDto>>.Create(resultModel);
                 }
             }
         }

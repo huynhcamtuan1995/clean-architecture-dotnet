@@ -12,11 +12,11 @@ namespace ProductService.AppCore.UseCases.Commands
 {
     public class CreateProduct
     {
-        public record Command : ICreateCommand<Command.CreateProductModel, ProductDto>
-        {
-            public CreateProductModel Model { get; init; } = default!;
+        public record CreateProductModel(string Name, int Quantity, decimal Cost, string ProductCodeName);
 
-            public record CreateProductModel(string Name, int Quantity, decimal Cost, string ProductCodeName);
+        public record Command : ICreateCommand<CreateProductModel, ProductDto>
+        {
+            public CreateProductModel Model { get; init; } = default(CreateProductModel)!;
 
             internal class Validator : AbstractValidator<Command>
             {
@@ -40,27 +40,28 @@ namespace ProductService.AppCore.UseCases.Commands
 
             internal class Handler : IRequestHandler<Command, ResultModel<ProductDto>>
             {
-                private readonly IRepository<Product> _productRepository;
                 private readonly IRepository<ProductCode> _productCodeRepository;
+                private readonly IRepository<Product> _productRepository;
 
                 public Handler(IRepository<Product> productRepository,
                     IRepository<ProductCode> productCodeRepository)
                 {
-                    _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
+                    _productRepository =
+                        productRepository ?? throw new ArgumentNullException(nameof(productRepository));
                     _productCodeRepository = productCodeRepository ??
                                              throw new ArgumentNullException(nameof(productCodeRepository));
                 }
 
                 public async Task<ResultModel<ProductDto>> Handle(Command request, CancellationToken cancellationToken)
                 {
-                    var productCode =
+                    ProductCode? productCode =
                         await _productCodeRepository.AddAsync(ProductCode.Create(request.Model.ProductCodeName));
                     if (productCode is null)
                     {
                         throw new Exception($"Couldn't find Product Code with name={request.Model.ProductCodeName}");
                     }
 
-                    var created = await _productRepository.AddAsync(
+                    Product? created = await _productRepository.AddAsync(
                         Product.Create(
                             request.Model.Name,
                             request.Model.Quantity,

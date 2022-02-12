@@ -31,8 +31,8 @@ namespace SettingService.Infrastructure
             });
 
             services.AddHttpContextAccessor();
-            services.AddCustomMediatR(new[] {typeof(AppCoreAnchor)});
-            services.AddCustomValidators(new[] {typeof(AppCoreAnchor)});
+            services.AddCustomMediatR(new[] { typeof(AppCoreAnchor) });
+            services.AddCustomValidators(new[] { typeof(AppCoreAnchor) });
             services.AddControllers();
             services.AddSwagger(apiType);
 
@@ -60,7 +60,7 @@ namespace SettingService.Infrastructure
                 endpoints.MapDefaultControllerRoute();
             });
 
-            var provider = app.Services.GetService<IApiVersionDescriptionProvider>();
+            IApiVersionDescriptionProvider? provider = app.Services.GetService<IApiVersionDescriptionProvider>();
             return app.UseSwagger(provider);
         }
     }

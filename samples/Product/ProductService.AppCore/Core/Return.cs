@@ -9,6 +9,6 @@ namespace ProductService.AppCore.Core
         public Product Product { get; protected set; }
         public Guid CustomerId { get; set; }
         public ReturnReason Reason { get; protected set; }
-        public string Note { get; protected set; } = default!;
+        public string Note { get; protected set; } = default(string)!;
     }
 }

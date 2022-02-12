@@ -8,18 +8,6 @@ namespace N8T.Infrastructure.TransactionalOutbox
 {
     public class OutboxEntity
     {
-        [JsonInclude]
-        public Guid Id { get; private set; }
-
-        [JsonInclude]
-        public DateTime OccurredOn { get; private set; }
-
-        [JsonInclude]
-        public string Type { get; private set; }
-
-        [JsonInclude]
-        public string Data { get; private set; }
-
         public OutboxEntity()
         {
             // only for System.Text.Json to deserialized data
@@ -33,6 +21,17 @@ namespace N8T.Infrastructure.TransactionalOutbox
             Data = JsonConvert.SerializeObject(@event);
         }
 
-        public virtual IDomainEvent RecreateMessage(Assembly assembly) => (IDomainEvent)JsonConvert.DeserializeObject(Data, assembly.GetType(Type)!);
+        [JsonInclude] public Guid Id { get; private set; }
+
+        [JsonInclude] public DateTime OccurredOn { get; private set; }
+
+        [JsonInclude] public string Type { get; private set; }
+
+        [JsonInclude] public string Data { get; private set; }
+
+        public virtual IDomainEvent RecreateMessage(Assembly assembly)
+        {
+            return (IDomainEvent)JsonConvert.DeserializeObject(Data, assembly.GetType(Type)!);
+        }
     }
 }

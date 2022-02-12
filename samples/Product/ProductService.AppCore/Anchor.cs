@@ -1,4 +1,6 @@
 namespace ProductService.AppCore
 {
-    public struct Anchor { }
+    public struct Anchor
+    {
+    }
 }

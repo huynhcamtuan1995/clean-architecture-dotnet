@@ -6,10 +6,10 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["src/Gateways/AppGateway/AppGateway.csproj", "src/Gateways/AppGateway/"]
-RUN dotnet restore "src/Gateways/AppGateway/AppGateway.csproj"
+COPY ["samples/AppGateway/AppGateway.csproj", "samples/AppGateway/"]
+RUN dotnet restore "samples/AppGateway/AppGateway.csproj"
 COPY . .
-WORKDIR "/src/src/Gateways/AppGateway"
+WORKDIR "/src/samples/AppGateway"
 RUN dotnet build "AppGateway.csproj" -c Release -o /app/build
 
 FROM build AS publish

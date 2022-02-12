@@ -7,22 +7,16 @@ namespace ProductService.AppCore.Core
 {
     public class Product : EntityRootBase
     {
-        private readonly List<Return> _returns = new();
+        private readonly List<Return> _returns = new List<Return>();
 
-        public string Name { get; private init; } = default!;
+        public string Name { get; private init; } = default(string)!;
         public bool Active { get; private init; }
         public int Quantity { get; private init; }
         public decimal Cost { get; private init; }
         public Guid ProductCodeId { get; private init; }
-        public ProductCode Code { get; private init; } = default!;
+        public ProductCode Code { get; } = default(ProductCode)!;
 
-        public IEnumerable<Return> Returns
-        {
-            get
-            {
-                return _returns.AsReadOnly();
-            }
-        }
+        public IEnumerable<Return> Returns => _returns.AsReadOnly();
 
         public static Product Create(string name, int quantity, decimal cost, ProductCode productCode)
         {
@@ -31,7 +25,7 @@ namespace ProductService.AppCore.Core
 
         public static Product Create(Guid id, string name, int quantity, decimal cost, ProductCode productCode)
         {
-            Product product = new()
+            Product product = new Product
             {
                 Id = id,
                 Name = name,

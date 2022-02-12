@@ -12,8 +12,8 @@ namespace CustomerService.Infrastructure.Data
         {
         }
 
-        public DbSet<Customer> Customers { get; set; } = default!;
-        public DbSet<CreditCard> CreditCards { get; set; } = default!;
+        public DbSet<Customer> Customers { get; set; } = default(DbSet<Customer>)!;
+        public DbSet<CreditCard> CreditCards { get; set; } = default(DbSet<CreditCard>)!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

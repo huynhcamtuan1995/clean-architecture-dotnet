@@ -9,15 +9,15 @@ namespace CustomerService.AppCore.Core.Entities
 {
     public class Customer : EntityRootBase
     {
-        private readonly List<CreditCard> _creditCards = new();
+        private readonly List<CreditCard> _creditCards = new List<CreditCard>();
 
-        public string FirstName { get; protected set; } = default!;
-        public string LastName { get; protected set; } = default!;
-        public string Email { get; protected set; } = default!;
+        public string FirstName { get; protected set; } = default(string)!;
+        public string LastName { get; protected set; } = default(string)!;
+        public string Email { get; protected set; } = default(string)!;
         public decimal Balance { get; protected set; }
         public Guid CountryId { get; protected set; }
 
-        public virtual IEnumerable<CreditCard> CreditCards { get { return _creditCards.AsReadOnly(); } }
+        public virtual IEnumerable<CreditCard> CreditCards => _creditCards.AsReadOnly();
 
         public virtual void ChangeEmail(string email)
         {
@@ -37,18 +37,26 @@ namespace CustomerService.AppCore.Core.Entities
         public static Customer Create(Guid id, string firstname, string lastname, string email, Guid countryId)
         {
             if (string.IsNullOrEmpty(firstname))
+            {
                 throw new ArgumentNullException("firstname");
+            }
 
             if (string.IsNullOrEmpty(lastname))
+            {
                 throw new ArgumentNullException("lastname");
+            }
 
             if (string.IsNullOrEmpty(email))
+            {
                 throw new ArgumentNullException("email");
+            }
 
             if (countryId == null)
+            {
                 throw new ArgumentNullException("country");
+            }
 
-            Customer customer = new()
+            Customer customer = new Customer
             {
                 Id = id,
                 FirstName = firstname,

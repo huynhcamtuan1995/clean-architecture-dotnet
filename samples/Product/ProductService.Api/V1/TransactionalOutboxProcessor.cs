@@ -19,7 +19,8 @@ namespace ProductService.Application.V1
         }
 
         [HttpPost("ProductOutboxCron")]
-        public async Task<ActionResult> HandleProductOutboxCronAsync(CancellationToken cancellationToken = new())
+        public async Task<ActionResult> HandleProductOutboxCronAsync(
+            CancellationToken cancellationToken = new CancellationToken())
         {
             await _outboxProcessor.HandleAsync(typeof(CoolStore.IntegrationEvents.Anchor), cancellationToken);
 

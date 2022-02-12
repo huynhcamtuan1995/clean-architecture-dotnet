@@ -6,10 +6,12 @@ namespace N8T.Infrastructure.Bus
 {
     public interface IEventBus
     {
-        Task PublishAsync<TEvent>(TEvent @event, string[] topics = default, CancellationToken token = default)
+        Task PublishAsync<TEvent>(TEvent @event, string[] topics = default(string[]),
+            CancellationToken token = default(CancellationToken))
             where TEvent : IDomainEvent;
 
-        Task SubscribeAsync<TEvent>(string[] topics = default, CancellationToken token = default)
+        Task SubscribeAsync<TEvent>(string[] topics = default(string[]),
+            CancellationToken token = default(CancellationToken))
             where TEvent : IDomainEvent;
     }
 }

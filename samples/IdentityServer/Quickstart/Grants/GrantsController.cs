@@ -2,29 +2,30 @@
 // See LICENSE in the project root for license information.
 
 
-using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Extensions;
+using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Stores;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityServerHost.Quickstart.UI
 {
     /// <summary>
-    /// This sample controller allows a user to revoke grants given to clients
+    ///     This sample controller allows a user to revoke grants given to clients
     /// </summary>
     [SecurityHeaders]
     [Authorize]
     public class GrantsController : Controller
     {
-        private readonly IIdentityServerInteractionService _interaction;
         private readonly IClientStore _clients;
-        private readonly IResourceStore _resources;
         private readonly IEventService _events;
+        private readonly IIdentityServerInteractionService _interaction;
+        private readonly IResourceStore _resources;
 
         public GrantsController(IIdentityServerInteractionService interaction,
             IClientStore clients,
@@ -38,7 +39,7 @@ namespace IdentityServerHost.Quickstart.UI
         }
 
         /// <summary>
-        /// Show list of grants
+        ///     Show list of grants
         /// </summary>
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -47,7 +48,7 @@ namespace IdentityServerHost.Quickstart.UI
         }
 
         /// <summary>
-        /// Handle postback to revoke a client
+        ///     Handle postback to revoke a client
         /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -61,17 +62,17 @@ namespace IdentityServerHost.Quickstart.UI
 
         private async Task<GrantsViewModel> BuildViewModelAsync()
         {
-            var grants = await _interaction.GetAllUserGrantsAsync();
+            IEnumerable<Grant> grants = await _interaction.GetAllUserGrantsAsync();
 
-            var list = new List<GrantViewModel>();
-            foreach(var grant in grants)
+            List<GrantViewModel> list = new List<GrantViewModel>();
+            foreach (Grant grant in grants)
             {
-                var client = await _clients.FindClientByIdAsync(grant.ClientId);
+                Client client = await _clients.FindClientByIdAsync(grant.ClientId);
                 if (client != null)
                 {
-                    var resources = await _resources.FindResourcesByScopeAsync(grant.Scopes);
+                    Resources resources = await _resources.FindResourcesByScopeAsync(grant.Scopes);
 
-                    var item = new GrantViewModel()
+                    GrantViewModel item = new GrantViewModel
                     {
                         ClientId = client.ClientId,
                         ClientName = client.ClientName ?? client.ClientId,
@@ -80,7 +81,8 @@ namespace IdentityServerHost.Quickstart.UI
                         Description = grant.Description,
                         Created = grant.CreationTime,
                         Expires = grant.Expiration,
-                        IdentityGrantNames = resources.IdentityResources.Select(x => x.DisplayName ?? x.Name).ToArray(),
+                        IdentityGrantNames =
+                            resources.IdentityResources.Select(x => x.DisplayName ?? x.Name).ToArray(),
                         ApiGrantNames = resources.ApiScopes.Select(x => x.DisplayName ?? x.Name).ToArray()
                     };
 
@@ -88,10 +90,7 @@ namespace IdentityServerHost.Quickstart.UI
                 }
             }
 
-            return new GrantsViewModel
-            {
-                Grants = list
-            };
+            return new GrantsViewModel { Grants = list };
         }
     }
 }

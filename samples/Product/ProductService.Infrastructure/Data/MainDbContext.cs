@@ -10,12 +10,11 @@ namespace ProductService.Infrastructure.Data
 
         public MainDbContext(DbContextOptions options) : base(options)
         {
-
         }
 
-        public DbSet<Product> Products { get; set; } = default!;
-        public DbSet<ProductCode> ProductCodes { get; set; } = default!;
-        public DbSet<Return> Returns { get; set; } = default!;
+        public DbSet<Product> Products { get; set; } = default(DbSet<Product>)!;
+        public DbSet<ProductCode> ProductCodes { get; set; } = default(DbSet<ProductCode>)!;
+        public DbSet<Return> Returns { get; set; } = default(DbSet<Return>)!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

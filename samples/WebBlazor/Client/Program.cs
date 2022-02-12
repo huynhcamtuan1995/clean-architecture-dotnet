@@ -21,12 +21,13 @@ namespace Blazor.Client
     {
         public static async Task Main(string[] args)
         {
-            var builder = WebAssemblyHostBuilder.CreateDefault(args);
+            WebAssemblyHostBuilder builder = WebAssemblyHostBuilder.CreateDefault(args);
 
             builder.Services.AddOptions();
             builder.Services.AddAuthorizationCore();
             builder.Services.TryAddSingleton<AuthenticationStateProvider, HostAuthenticationStateProvider>();
-            builder.Services.TryAddSingleton(sp => (HostAuthenticationStateProvider)sp.GetRequiredService<AuthenticationStateProvider>());
+            builder.Services.TryAddSingleton(sp =>
+                (HostAuthenticationStateProvider)sp.GetRequiredService<AuthenticationStateProvider>());
 
             builder.Services.AddBlazorise(options =>
                 {
@@ -40,7 +41,8 @@ namespace Blazor.Client
             builder.Services.AddTransient<AntiforgeryHandler>();
 
             // Because of HostAuthenticationStateProvider.cs
-            builder.Services.AddHttpClient("backend", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
+            builder.Services.AddHttpClient("backend",
+                    client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
                 .AddHttpMessageHandler<AntiforgeryHandler>();
             builder.Services.AddTransient(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("backend"));
 

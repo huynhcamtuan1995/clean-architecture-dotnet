@@ -34,8 +34,8 @@ namespace ProductService.Infrastructure
             });
 
             services.AddHttpContextAccessor();
-            services.AddCustomMediatR(new[] {typeof(AppCoreAnchor)});
-            services.AddCustomValidators(new[] {typeof(AppCoreAnchor)});
+            services.AddCustomMediatR(new[] { typeof(AppCoreAnchor) });
+            services.AddCustomValidators(new[] { typeof(AppCoreAnchor) });
             services.AddDaprClient();
             services.AddControllers().AddMessageBroker(config);
             services.AddTransactionalOutbox(config);
@@ -45,7 +45,7 @@ namespace ProductService.Infrastructure
                 config.GetConnectionString(DbName),
                 dbOptionsBuilder => dbOptionsBuilder.UseModel(MainDbContextModel.Instance),
                 svc => svc.AddRepository(typeof(Repository<>))
-                );
+            );
 
             services.AddAuthentication("token")
                 .AddJwtBearer("token", options =>
@@ -53,11 +53,10 @@ namespace ProductService.Infrastructure
                     options.Authority = "https://localhost:5001";
                     options.MapInboundClaims = false;
 
-                    options.TokenValidationParameters = new TokenValidationParameters()
+                    options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateAudience = false,
                         ValidTypes = new[] { "at+jwt" },
-
                         NameClaimType = "name",
                         RoleClaimType = "role"
                     };
@@ -99,7 +98,7 @@ namespace ProductService.Infrastructure
                     .RequireAuthorization("ApiCaller");
             });
 
-            var provider = app.Services.GetService<IApiVersionDescriptionProvider>();
+            IApiVersionDescriptionProvider? provider = app.Services.GetService<IApiVersionDescriptionProvider>();
             return app.UseSwagger(provider);
         }
     }

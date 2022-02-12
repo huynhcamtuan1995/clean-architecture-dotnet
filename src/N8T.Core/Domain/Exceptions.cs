@@ -10,22 +10,22 @@ namespace N8T.Core.Domain
 
         public static CoreException Exception(string message)
         {
-            return new(message);
+            return new CoreException(message);
         }
 
         public static CoreException NullArgument(string arg)
         {
-            return new($"{arg} cannot be null");
+            return new CoreException($"{arg} cannot be null");
         }
 
         public static CoreException InvalidArgument(string arg)
         {
-            return new($"{arg} is invalid");
+            return new CoreException($"{arg} is invalid");
         }
 
         public static CoreException NotFound(string arg)
         {
-            return new($"{arg} was not found");
+            return new CoreException($"{arg} was not found");
         }
     }
 }

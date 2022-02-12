@@ -36,8 +36,8 @@ namespace N8T.Infrastructure
             });
 
             services.AddHttpContextAccessor();
-            services.AddCustomMediatR(new []{apiAnchorType});
-            services.AddCustomValidators(new[] {apiAnchorType});
+            services.AddCustomMediatR(new[] { apiAnchorType });
+            services.AddCustomValidators(new[] { apiAnchorType });
             services.AddDaprClient();
             services.AddControllers().AddMessageBroker(config);
             services.AddTransactionalOutbox(config);
@@ -65,7 +65,7 @@ namespace N8T.Infrastructure
                 endpoints.MapDefaultControllerRoute();
             });
 
-            var provider = app.Services.GetService<IApiVersionDescriptionProvider>();
+            IApiVersionDescriptionProvider provider = app.Services.GetService<IApiVersionDescriptionProvider>();
             return app.UseSwagger(provider);
         }
 
@@ -88,7 +88,7 @@ namespace N8T.Infrastructure
         public static TResult SafeGetListQuery<TResult, TResponse>(this HttpContext httpContext, string query)
             where TResult : IListQuery<TResponse>, new()
         {
-            var queryModel = new TResult();
+            TResult queryModel = new TResult();
             if (!(string.IsNullOrEmpty(query) || query == "{}"))
             {
                 queryModel = JsonConvert.DeserializeObject<TResult>(query);
@@ -118,19 +118,19 @@ namespace N8T.Infrastructure
         {
             try
             {
-                var converter = TypeDescriptor.GetConverter(typeof(T));
+                TypeConverter converter = TypeDescriptor.GetConverter(typeof(T));
                 return (T)converter.ConvertFromString(input);
             }
             catch (NotSupportedException)
             {
-                return default;
+                return default(T);
             }
         }
 
         [DebuggerStepThrough]
         public static TModel GetOptions<TModel>(this IConfiguration configuration, string section) where TModel : new()
         {
-            var model = new TModel();
+            TModel model = new TModel();
             configuration.GetSection(section).Bind(model);
             return model;
         }

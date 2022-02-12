@@ -1,8 +1,9 @@
+using System;
 using System.Diagnostics;
-using MediatR;
-using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace N8T.Infrastructure.Logging
 {
@@ -12,7 +13,10 @@ namespace N8T.Infrastructure.Logging
     {
         private readonly ILogger<LoggingBehavior<TRequest, TResponse>> _logger;
 
-        public LoggingBehavior(ILogger<LoggingBehavior<TRequest, TResponse>> logger) => _logger = logger;
+        public LoggingBehavior(ILogger<LoggingBehavior<TRequest, TResponse>> logger)
+        {
+            _logger = logger;
+        }
 
         public async Task<TResponse> Handle(TRequest request,
             CancellationToken cancellationToken,
@@ -23,13 +27,13 @@ namespace N8T.Infrastructure.Logging
             _logger.LogInformation("[{Prefix}] Handle request={X-RequestData} and response={X-ResponseData}",
                 prefix, typeof(TRequest).Name, typeof(TResponse).Name);
 
-            var timer = new Stopwatch();
+            Stopwatch timer = new Stopwatch();
             timer.Start();
 
-            var response = await next();
+            TResponse response = await next();
 
             timer.Stop();
-            var timeTaken = timer.Elapsed;
+            TimeSpan timeTaken = timer.Elapsed;
             if (timeTaken.Seconds > 3) // if the request is greater than 3 seconds, then log the warnings
             {
                 _logger.LogWarning("[{Perf-Possible}] The request {X-RequestData} took {TimeTaken} seconds.",

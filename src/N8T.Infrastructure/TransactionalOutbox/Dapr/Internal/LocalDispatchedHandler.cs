@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Dapr;
 using Dapr.Client;
 using MediatR;
 using Microsoft.Extensions.Options;
@@ -20,12 +21,13 @@ namespace N8T.Infrastructure.TransactionalOutbox.Dapr.Internal
             _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public async Task Handle(EventWrapper @eventWrapper, CancellationToken cancellationToken)
+        public async Task Handle(EventWrapper eventWrapper, CancellationToken cancellationToken)
         {
-            var events = await _daprClient.GetStateEntryAsync<List<OutboxEntity>>(_options.Value.StateStoreName, _options.Value.OutboxName, cancellationToken: cancellationToken);
+            StateEntry<List<OutboxEntity>> events = await _daprClient.GetStateEntryAsync<List<OutboxEntity>>(
+                _options.Value.StateStoreName, _options.Value.OutboxName, cancellationToken: cancellationToken);
             events.Value ??= new List<OutboxEntity>();
 
-            var outboxEntity = new OutboxEntity(Guid.NewGuid(), DateTime.UtcNow, @eventWrapper.Event);
+            OutboxEntity outboxEntity = new OutboxEntity(Guid.NewGuid(), DateTime.UtcNow, eventWrapper.Event);
 
             events.Value.Add(outboxEntity);
 

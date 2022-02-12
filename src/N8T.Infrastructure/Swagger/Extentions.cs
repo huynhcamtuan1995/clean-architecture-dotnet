@@ -32,7 +32,7 @@ namespace N8T.Infrastructure.Swagger
                 {
                     options.OperationFilter<SwaggerDefaultValues>();
 
-                    var xmlFile = XmlCommentsFilePath(anchor);
+                    string xmlFile = XmlCommentsFilePath(anchor);
                     if (File.Exists(xmlFile))
                     {
                         options.IncludeXmlComments(xmlFile);
@@ -43,19 +43,20 @@ namespace N8T.Infrastructure.Swagger
 
             static string XmlCommentsFilePath(Type anchor)
             {
-                var basePath = PlatformServices.Default.Application.ApplicationBasePath;
-                var fileName = anchor.GetTypeInfo().Assembly.GetName().Name + ".xml";
+                string basePath = PlatformServices.Default.Application.ApplicationBasePath;
+                string fileName = anchor.GetTypeInfo().Assembly.GetName().Name + ".xml";
                 return Path.Combine(basePath, fileName);
             }
         }
 
-        public static IApplicationBuilder UseSwagger(this IApplicationBuilder app, IApiVersionDescriptionProvider provider)
+        public static IApplicationBuilder UseSwagger(this IApplicationBuilder app,
+            IApiVersionDescriptionProvider provider)
         {
             app.UseSwagger();
             app.UseSwaggerUI(
                 options =>
                 {
-                    foreach (var description in provider.ApiVersionDescriptions)
+                    foreach (ApiVersionDescription description in provider.ApiVersionDescriptions)
                     {
                         options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
                             description.GroupName.ToUpperInvariant());

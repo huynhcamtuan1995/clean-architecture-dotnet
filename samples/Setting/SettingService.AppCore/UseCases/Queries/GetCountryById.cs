@@ -13,7 +13,7 @@ namespace SettingService.AppCore.UseCases.Queries
     {
         public record Query : IItemQuery<Guid, CountryDto>
         {
-            public List<string> Includes { get; init; } = new();
+            public List<string> Includes { get; init; } = new List<string>();
             public Guid Id { get; init; }
 
             internal class Validator : AbstractValidator<Query>
@@ -38,16 +38,16 @@ namespace SettingService.AppCore.UseCases.Queries
 
                 protected override ResultModel<CountryDto> Handle(Query request)
                 {
-                    if (request == null) throw new ArgumentNullException(nameof(request));
+                    if (request == null)
+                    {
+                        throw new ArgumentNullException(nameof(request));
+                    }
 
-                    var country = _countryRepository.FindById(request.Id);
+                    Country country = _countryRepository.FindById(request.Id);
 
                     return ResultModel<CountryDto>.Create(new CountryDto
                     {
-                        Id = country.Id,
-                        Name = country.Name,
-                        Created = country.Created,
-                        Updated = country.Updated
+                        Id = country.Id, Name = country.Name, Created = country.Created, Updated = country.Updated
                     });
                 }
             }

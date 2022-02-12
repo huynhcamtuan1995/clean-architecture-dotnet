@@ -7,9 +7,9 @@ namespace N8T.Core.Specification
 {
     public abstract class GridSpecificationBase<T> : IGridSpecification<T>
     {
-        public virtual List<Expression<Func<T, bool>>> Criterias { get; } = new();
-        public List<Expression<Func<T, object>>> Includes { get; } = new();
-        public List<string> IncludeStrings { get; } = new();
+        public virtual List<Expression<Func<T, bool>>> Criterias { get; } = new List<Expression<Func<T, bool>>>();
+        public List<Expression<Func<T, object>>> Includes { get; } = new List<Expression<Func<T, object>>>();
+        public List<string> IncludeStrings { get; } = new List<string>();
         public Expression<Func<T, object>> OrderBy { get; private set; }
         public Expression<Func<T, object>> OrderByDescending { get; private set; }
         public Expression<Func<T, object>> GroupBy { get; private set; }
@@ -20,7 +20,7 @@ namespace N8T.Core.Specification
 
         protected void ApplyIncludeList(IEnumerable<Expression<Func<T, object>>> includes)
         {
-            foreach (var include in includes)
+            foreach (Expression<Func<T, object>> include in includes)
             {
                 AddInclude(include);
             }
@@ -33,7 +33,7 @@ namespace N8T.Core.Specification
 
         protected void ApplyIncludeList(IEnumerable<string> includes)
         {
-            foreach (var include in includes)
+            foreach (string include in includes)
             {
                 AddInclude(include);
             }
@@ -46,7 +46,7 @@ namespace N8T.Core.Specification
 
         protected IGridSpecification<T> ApplyFilterList(IEnumerable<FilterModel> filters)
         {
-            foreach (var (fieldName, comparision, fieldValue) in filters)
+            foreach ((string fieldName, string comparision, string fieldValue) in filters)
             {
                 ApplyFilter(PredicateBuilder.Build<T>(fieldName, comparision, fieldValue));
             }
@@ -68,18 +68,24 @@ namespace N8T.Core.Specification
             IsPagingEnabled = true;
         }
 
-        protected void ApplyOrderBy(Expression<Func<T, object>> orderByExpression) =>
+        protected void ApplyOrderBy(Expression<Func<T, object>> orderByExpression)
+        {
             OrderBy = orderByExpression;
+        }
 
-        protected void ApplyOrderByDescending(Expression<Func<T, object>> orderByDescendingExpression) =>
+        protected void ApplyOrderByDescending(Expression<Func<T, object>> orderByDescendingExpression)
+        {
             OrderByDescending = orderByDescendingExpression;
+        }
 
-        protected void ApplyGroupBy(Expression<Func<T, object>> groupByExpression) =>
+        protected void ApplyGroupBy(Expression<Func<T, object>> groupByExpression)
+        {
             GroupBy = groupByExpression;
+        }
 
         protected void ApplySortingList(IEnumerable<string> sorts)
         {
-            foreach (var sort in sorts)
+            foreach (string sort in sorts)
             {
                 ApplySorting(sort);
             }

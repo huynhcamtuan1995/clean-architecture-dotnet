@@ -3,11 +3,15 @@ using System.Collections.Generic;
 
 namespace N8T.Core.Domain
 {
-    public interface IAggregateRoot { }
+    public interface IAggregateRoot
+    {
+    }
 
-    public interface ITxRequest { }
+    public interface ITxRequest
+    {
+    }
 
-    public abstract class EntityRootBase :  EntityBase, IAggregateRoot
+    public abstract class EntityRootBase : EntityBase, IAggregateRoot
     {
         public HashSet<EventBase> DomainEvents { get; private set; }
 

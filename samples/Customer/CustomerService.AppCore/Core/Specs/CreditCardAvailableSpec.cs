@@ -14,6 +14,7 @@ namespace CustomerService.AppCore.Core.Specs
             _dateTime = dateTime;
         }
 
-        public override Expression<Func<CreditCard, bool>> Criteria => creditCard => creditCard.Active && creditCard.Expiry >= _dateTime;
+        public override Expression<Func<CreditCard, bool>> Criteria =>
+            creditCard => creditCard.Active && creditCard.Expiry >= _dateTime;
     }
 }

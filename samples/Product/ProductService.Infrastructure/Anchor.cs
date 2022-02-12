@@ -1,4 +1,6 @@
 namespace ProductService.Infrastructure
 {
-    internal struct Anchor { }
+    internal struct Anchor
+    {
+    }
 }

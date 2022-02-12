@@ -4,8 +4,8 @@ namespace CoolStore.AppContracts.Common
 {
     public class QueryDto
     {
-        public List<FilterDto> Filters { get; init; } = new();
-        public List<string> Sorts { get; init; } = new();
+        public List<FilterDto> Filters { get; init; } = new List<FilterDto>();
+        public List<string> Sorts { get; init; } = new List<string>();
         public int Page { get; set; } = 1;
         public int PageSize { get; set; } = 20;
     }

@@ -6,6 +6,6 @@ namespace N8T.Infrastructure.TransactionalOutbox.Dapr
 {
     public interface ITransactionalOutboxProcessor
     {
-        Task HandleAsync(Type integrationAssemblyType, CancellationToken cancellationToken = new());
+        Task HandleAsync(Type integrationAssemblyType, CancellationToken cancellationToken = new CancellationToken());
     }
 }
