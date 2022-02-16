@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace CoolStore.AppContracts.Dtos
+namespace AppContracts.Dtos
 {
     public class ProductDto
     {

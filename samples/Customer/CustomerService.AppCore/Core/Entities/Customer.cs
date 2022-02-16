@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using CoolStore.IntegrationEvents.Customer;
 using CustomerService.AppCore.Core.Specs;
+using IntegrationEvents.Customer;
 using N8T.Core.Domain;
 
 namespace CustomerService.AppCore.Core.Entities
@@ -51,7 +51,7 @@ namespace CustomerService.AppCore.Core.Entities
                 throw new ArgumentNullException("email");
             }
 
-            if (countryId == null)
+            if (countryId == Guid.Empty)
             {
                 throw new ArgumentNullException("country");
             }

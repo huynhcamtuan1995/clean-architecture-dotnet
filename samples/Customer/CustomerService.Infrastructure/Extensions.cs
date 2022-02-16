@@ -1,6 +1,6 @@
 using System;
-using CoolStore.AppContracts;
-using CoolStore.AppContracts.RestApi;
+using AppContracts;
+using AppContracts.RestApi;
 using CustomerService.Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

@@ -1,7 +1,7 @@
 using System;
 using N8T.Core.Domain;
 
-namespace CoolStore.IntegrationEvents.Setting
+namespace IntegrationEvents.Setting
 {
     public class CountryCreatedIntegrationEvent : EventBase
     {

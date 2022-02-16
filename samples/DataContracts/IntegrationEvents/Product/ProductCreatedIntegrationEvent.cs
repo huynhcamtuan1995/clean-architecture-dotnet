@@ -1,7 +1,7 @@
 using System;
 using N8T.Core.Domain;
 
-namespace CoolStore.IntegrationEvents.Product
+namespace IntegrationEvents.Product
 {
     public class ProductCreatedIntegrationEvent : EventBase
     {

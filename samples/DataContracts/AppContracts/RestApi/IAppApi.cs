@@ -1,9 +1,9 @@
-﻿using System.Threading.Tasks;
-using CoolStore.AppContracts.Common;
-using CoolStore.AppContracts.Dtos;
+using System.Threading.Tasks;
+using AppContracts.Common;
+using AppContracts.Dtos;
 using RestEase;
 
-namespace CoolStore.AppContracts.RestApi
+namespace AppContracts.RestApi
 {
     public interface IAppApi
     {

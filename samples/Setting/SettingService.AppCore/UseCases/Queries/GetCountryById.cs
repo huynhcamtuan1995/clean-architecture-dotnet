@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using CoolStore.AppContracts.Dtos;
+using AppContracts.Dtos;
 using FluentValidation;
 using MediatR;
 using N8T.Core.Domain;
@@ -15,41 +15,44 @@ namespace SettingService.AppCore.UseCases.Queries
         {
             public List<string> Includes { get; init; } = new List<string>();
             public Guid Id { get; init; }
+        }
 
-            internal class Validator : AbstractValidator<Query>
+        internal class Validator : AbstractValidator<Query>
+        {
+            public Validator()
             {
-                public Validator()
-                {
-                    RuleFor(x => x.Id)
-                        .NotNull()
-                        .NotEmpty().WithMessage("Id is required.");
-                }
+                RuleFor(x => x.Id)
+                    .NotNull()
+                    .NotEmpty().WithMessage("Id is required.");
+            }
+        }
+
+        internal class Handler : RequestHandler<Query, ResultModel<CountryDto>>
+        {
+            private readonly IRepository<Country> _countryRepository;
+
+            public Handler(IRepository<Country> countryRepository)
+            {
+                _countryRepository =
+                    countryRepository ?? throw new ArgumentNullException(nameof(countryRepository));
             }
 
-            internal class Handler : RequestHandler<Query, ResultModel<CountryDto>>
+            protected override ResultModel<CountryDto> Handle(Query request)
             {
-                private readonly IRepository<Country> _countryRepository;
-
-                public Handler(IRepository<Country> countryRepository)
+                if (request == null)
                 {
-                    _countryRepository =
-                        countryRepository ?? throw new ArgumentNullException(nameof(countryRepository));
+                    throw new ArgumentNullException(nameof(request));
                 }
 
-                protected override ResultModel<CountryDto> Handle(Query request)
+                Country country = _countryRepository.FindById(request.Id);
+
+                return ResultModel<CountryDto>.Create(new CountryDto
                 {
-                    if (request == null)
-                    {
-                        throw new ArgumentNullException(nameof(request));
-                    }
-
-                    Country country = _countryRepository.FindById(request.Id);
-
-                    return ResultModel<CountryDto>.Create(new CountryDto
-                    {
-                        Id = country.Id, Name = country.Name, Created = country.Created, Updated = country.Updated
-                    });
-                }
+                    Id = country.Id,
+                    Name = country.Name,
+                    Created = country.Created,
+                    Updated = country.Updated
+                });
             }
         }
     }

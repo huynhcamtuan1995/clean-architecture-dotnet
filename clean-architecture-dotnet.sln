@@ -34,9 +34,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "N8T.Infrastructure.EfCore",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "N8T.Infrastructure.OTel", "src\N8T.Infrastructure.OTel\N8T.Infrastructure.OTel.csproj", "{29C07DD9-A626-4F47-8193-0B2835F8CE62}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoolStore.AppContracts", "samples\DataContracts\CoolStore.AppContracts\CoolStore.AppContracts.csproj", "{7A6697D1-7DD7-4F67-A3AE-A9621FCD8B4E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppContracts", "samples\DataContracts\AppContracts\AppContracts.csproj", "{7A6697D1-7DD7-4F67-A3AE-A9621FCD8B4E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoolStore.IntegrationEvents", "samples\DataContracts\CoolStore.IntegrationEvents\CoolStore.IntegrationEvents.csproj", "{4F5E8195-DD55-4635-977B-2354082C16ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationEvents", "samples\DataContracts\IntegrationEvents\IntegrationEvents.csproj", "{4F5E8195-DD55-4635-977B-2354082C16ED}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductService.Api", "samples\Product\ProductService.Api\ProductService.Api.csproj", "{71AA0BB2-9F37-415E-9B30-6C838726F4E7}"
 EndProject

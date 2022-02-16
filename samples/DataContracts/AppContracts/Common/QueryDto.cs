@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
-namespace CoolStore.AppContracts.Common
+namespace AppContracts.Common
 {
     public class QueryDto
     {

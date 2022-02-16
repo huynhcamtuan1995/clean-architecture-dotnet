@@ -22,7 +22,7 @@ namespace CustomerService.Application.V1
         public async Task<ActionResult> HandleProductOutboxCronAsync(
             CancellationToken cancellationToken = new CancellationToken())
         {
-            await _outboxProcessor.HandleAsync(typeof(CoolStore.IntegrationEvents.Anchor), cancellationToken);
+            await _outboxProcessor.HandleAsync(typeof(IntegrationEvents.Anchor), cancellationToken);
 
             return Ok();
         }

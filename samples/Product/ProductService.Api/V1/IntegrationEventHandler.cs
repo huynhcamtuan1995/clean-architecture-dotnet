@@ -1,8 +1,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using CoolStore.IntegrationEvents.Customer;
 using Dapr;
+using IntegrationEvents.Customer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using N8T.Infrastructure.Controller;

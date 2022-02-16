@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\DataContracts\CoolStore.AppContracts\CoolStore.AppContracts.csproj" Watch="false" />
+    <ProjectReference Include="..\..\DataContracts\CoolStore.AppContracts\AppContracts.csproj" Watch="false" />
   </ItemGroup>
 
   <!--<ItemGroup>

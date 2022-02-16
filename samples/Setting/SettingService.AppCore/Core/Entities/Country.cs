@@ -1,5 +1,5 @@
 using System;
-using CoolStore.IntegrationEvents.Setting;
+using IntegrationEvents.Setting;
 using N8T.Core.Domain;
 
 namespace SettingService.AppCore.Core.Entities

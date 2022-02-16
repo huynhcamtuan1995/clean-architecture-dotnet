@@ -1,4 +1,4 @@
-namespace CoolStore.AppContracts
+namespace AppContracts
 {
     public class AppConstants
     {

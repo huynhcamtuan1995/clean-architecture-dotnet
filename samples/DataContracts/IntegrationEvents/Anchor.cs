@@ -1,4 +1,4 @@
-namespace CoolStore.IntegrationEvents
+namespace IntegrationEvents
 {
     public struct Anchor
     {

@@ -1,8 +1,8 @@
 using System;
 
-namespace CoolStore.AppContracts.Dtos
+namespace AppContracts.Dtos
 {
-    public class ProductCodeDto
+    public class CountryDto
     {
         public string Name { get; set; } = default(string)!;
         public Guid Id { get; set; }

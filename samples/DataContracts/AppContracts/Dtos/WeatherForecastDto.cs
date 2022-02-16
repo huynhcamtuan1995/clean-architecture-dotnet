@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace CoolStore.AppContracts.Dtos
+namespace AppContracts.Dtos
 {
     public class WeatherForecastDto
     {

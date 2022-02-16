@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using CoolStore.IntegrationEvents.Product;
+using IntegrationEvents.Product;
 using N8T.Core.Domain;
 
 namespace ProductService.AppCore.Core

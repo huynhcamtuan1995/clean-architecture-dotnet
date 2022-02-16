@@ -1,6 +1,6 @@
 using N8T.Core.Domain;
 
-namespace CoolStore.IntegrationEvents.Customer
+namespace IntegrationEvents.Customer
 {
     [DaprPubSubName(PubSubName = "pubsub")]
     public class CustomerCreatedIntegrationEvent : EventBase
