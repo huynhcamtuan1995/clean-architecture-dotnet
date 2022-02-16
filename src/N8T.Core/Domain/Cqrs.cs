@@ -28,7 +28,7 @@ namespace N8T.Core.Domain
     }
 
     public interface IDeleteCommand<TId, TResponse> : ICommand<TResponse>
-        where TId : struct
+        where TId : notnull
         where TResponse : notnull
     {
         public TId Id { get; init; }
@@ -45,7 +45,7 @@ namespace N8T.Core.Domain
     }
 
     public interface IItemQuery<TId, TResponse> : IQuery<TResponse>
-        where TId : struct
+        where TId : notnull
         where TResponse : notnull
     {
         public List<string> Includes { get; init; }
