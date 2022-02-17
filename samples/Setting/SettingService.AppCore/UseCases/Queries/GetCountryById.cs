@@ -14,20 +14,20 @@ namespace SettingService.AppCore.UseCases.Queries
         public record Query : IItemQuery<Guid, CountryDto>
         {
             public List<string> Includes { get; init; } = new List<string>();
-            public Guid Id { get; init; }
+            public Guid Data { get; init; }
         }
 
         internal class Validator : AbstractValidator<Query>
         {
             public Validator()
             {
-                RuleFor(x => x.Id)
+                RuleFor(x => x.Data)
                     .NotNull()
-                    .NotEmpty().WithMessage("Id is required.");
+                    .NotEmpty().WithMessage($"{nameof(Query.Data)} is required.");
             }
         }
 
-        internal class Handler : RequestHandler<Query, ResultModel<CountryDto>>
+        internal class Handler : RequestHandler<GetCountryById.Query, ResultModel<CountryDto>>
         {
             private readonly IRepository<Country> _countryRepository;
 
@@ -37,14 +37,14 @@ namespace SettingService.AppCore.UseCases.Queries
                     countryRepository ?? throw new ArgumentNullException(nameof(countryRepository));
             }
 
-            protected override ResultModel<CountryDto> Handle(Query request)
+            protected override ResultModel<CountryDto> Handle(GetCountryById.Query request)
             {
                 if (request == null)
                 {
                     throw new ArgumentNullException(nameof(request));
                 }
 
-                Country country = _countryRepository.FindById(request.Id);
+                Country country = _countryRepository.FindById(request.Data);
 
                 return ResultModel<CountryDto>.Create(new CountryDto
                 {

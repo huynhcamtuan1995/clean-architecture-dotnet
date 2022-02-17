@@ -49,7 +49,7 @@ namespace N8T.Core.Domain
         where TResponse : notnull
     {
         public List<string> Includes { get; init; }
-        public TId Id { get; init; }
+        public TId Data { get; init; }
     }
 
     public record FilterModel(string FieldName, string Comparision, string FieldValue);

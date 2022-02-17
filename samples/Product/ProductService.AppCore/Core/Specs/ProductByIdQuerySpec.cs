@@ -14,7 +14,7 @@ namespace ProductService.AppCore.Core.Specs
         {
             ApplyIncludeList(queryInput.Includes);
 
-            _id = queryInput.Id;
+            _id = queryInput.Data;
         }
 
         public override Expression<Func<Product, bool>> Criteria => p => p.Id == _id;

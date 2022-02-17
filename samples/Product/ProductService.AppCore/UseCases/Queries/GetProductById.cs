@@ -17,16 +17,16 @@ namespace ProductService.AppCore.UseCases.Queries
         public record Query : IItemQuery<Guid, ProductDto>
         {
             public List<string> Includes { get; init; } = new List<string>(new[] { "Returns", "Code" });
-            public Guid Id { get; init; }
+            public Guid Data { get; init; }
         }
 
         internal class Validator : AbstractValidator<Query>
         {
             public Validator()
             {
-                RuleFor(x => x.Id)
+                RuleFor(x => x.Data)
                     .NotNull()
-                    .NotEmpty().WithMessage("Id is required.");
+                    .NotEmpty().WithMessage($"{nameof(Query.Data)} is required.");
             }
         }
 
