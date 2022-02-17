@@ -17,7 +17,7 @@ namespace SettingService.Application.V1
             Guid id,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            GetCountryById.Query request = new GetCountryById.Query { Id = id };
+            GetCountryById.Query request = new GetCountryById.Query { Data = id };
 
             return Ok(await Mediator.Send(request, cancellationToken));
         }

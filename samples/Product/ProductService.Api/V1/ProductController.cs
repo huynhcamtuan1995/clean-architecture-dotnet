@@ -20,7 +20,7 @@ namespace ProductService.Application.V1
         public async Task<ActionResult<ProductDto>> HandleGetProductByIdAsync(Guid id,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            GetProductById.Query request = new GetProductById.Query { Id = id };
+            GetProductById.Query request = new GetProductById.Query { Data = id };
 
             return Ok(await Mediator.Send(request, cancellationToken));
         }
