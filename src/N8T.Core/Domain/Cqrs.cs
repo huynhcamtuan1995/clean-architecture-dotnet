@@ -31,7 +31,7 @@ namespace N8T.Core.Domain
         where TId : notnull
         where TResponse : notnull
     {
-        public TId Id { get; init; }
+        public TId Data { get; init; }
     }
 
     public interface IListQuery<TResponse> : IQuery<TResponse>
