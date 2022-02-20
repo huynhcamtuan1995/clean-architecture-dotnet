@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="UseCases\Queries\**" />
+    <EmbeddedResource Remove="UseCases\Queries\**" />
+    <None Remove="UseCases\Queries\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="10.3.6" />
+    <PackageReference Include="Mapster" Version="7.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.0-preview.7.21378.6" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.7.2-preview-10803222715" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\N8T.Core\N8T.Core.csproj" />
+    <ProjectReference Include="..\..\DataContracts\AppContracts\AppContracts.csproj" />
+    <ProjectReference Include="..\..\DataContracts\IntegrationEvents\IntegrationEvents.csproj" />
+  </ItemGroup>
+
+</Project>

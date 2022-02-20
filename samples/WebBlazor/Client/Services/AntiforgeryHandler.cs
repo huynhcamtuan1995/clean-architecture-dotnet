@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Blazor.Client
+namespace Blazor.Client.Services
 {
     public class AntiforgeryHandler : DelegatingHandler
     {

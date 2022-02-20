@@ -1,5 +1,4 @@
 using System;
-using AppContracts;
 using AppContracts.RestApi;
 using CustomerService.Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
@@ -25,7 +24,9 @@ namespace CustomerService.Infrastructure
         private const string DbName = "postgres";
 
         public static IServiceCollection AddCoreServices(this IServiceCollection services,
-            IConfiguration config, IWebHostEnvironment env, Type apiType)
+            IConfiguration config,
+            IWebHostEnvironment env,
+            Type apiType)
         {
             services.AddCors(options =>
             {
@@ -48,7 +49,8 @@ namespace CustomerService.Infrastructure
                 dbOptionsBuilder => dbOptionsBuilder.UseModel(MainDbContextModel.Instance),
                 svc => svc.AddRepository(typeof(Repository<>)));
 
-            services.AddRestClient(typeof(ICountryApi), AppConstants.SettingAppName,
+            services.AddRestClient(typeof(ICountryApi),
+                config.GetValue("Services:SettingApp:Host", "localhost"),
                 config.GetValue("Services:SettingApp:Port", 5005));
 
             return services;

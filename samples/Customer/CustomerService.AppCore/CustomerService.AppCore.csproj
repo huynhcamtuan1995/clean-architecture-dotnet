@@ -8,8 +8,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\N8T.Core\N8T.Core.csproj" />
-    <ProjectReference Include="..\..\DataContracts\CoolStore.AppContracts\AppContracts.csproj" />
-    <ProjectReference Include="..\..\DataContracts\CoolStore.IntegrationEvents\IntegrationEvents.csproj" />
+    <ProjectReference Include="..\..\DataContracts\AppContracts\AppContracts.csproj" />
+    <ProjectReference Include="..\..\DataContracts\IntegrationEvents\IntegrationEvents.csproj" />
   </ItemGroup>
 
   <ItemGroup>

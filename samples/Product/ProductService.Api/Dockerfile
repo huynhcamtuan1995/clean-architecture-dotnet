@@ -9,10 +9,10 @@ WORKDIR /src
 COPY ["samples/Product/ProductService.Api/ProductService.Api.csproj", "samples/Product/ProductService.Api/"]
 COPY ["src/N8T.Infrastructure/N8T.Infrastructure.csproj", "src/N8T.Infrastructure/"]
 COPY ["src/N8T.Core/N8T.Core.csproj", "src/N8T.Core/"]
-COPY ["samples/DataContracts/CoolStore.AppContracts/CoolStore.AppContracts.csproj", "samples/DataContracts/CoolStore.AppContracts/"]
-COPY ["samples/DataContracts/CoolStore.IntegrationEvents/CoolStore.IntegrationEvents.csproj", "samples/DataContracts/CoolStore.IntegrationEvents/"]
 COPY ["src/N8T.Infrastructure.OTel/N8T.Infrastructure.OTel.csproj", "src/N8T.Infrastructure.OTel/"]
 COPY ["samples/Product/ProductService.AppCore/ProductService.AppCore.csproj", "samples/Product/ProductService.AppCore/"]
+COPY ["samples/DataContracts/AppContracts/AppContracts.csproj", "samples/DataContracts/AppContracts/"]
+COPY ["samples/DataContracts/IntegrationEvents/IntegrationEvents.csproj", "samples/DataContracts/IntegrationEvents/"]
 COPY ["src/N8T.Infrastructure.EfCore/N8T.Infrastructure.EfCore.csproj", "src/N8T.Infrastructure.EfCore/"]
 COPY ["samples/Product/ProductService.Infrastructure/ProductService.Infrastructure.csproj", "samples/Product/ProductService.Infrastructure/"]
 RUN dotnet restore "samples/Product/ProductService.Api/ProductService.Api.csproj"

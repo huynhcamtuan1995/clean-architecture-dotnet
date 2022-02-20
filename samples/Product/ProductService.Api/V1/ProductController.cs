@@ -16,6 +16,22 @@ namespace ProductService.Application.V1
     [ApiVersion("1.0")]
     public class ProductController : BaseController
     {
+        //#######################################
+        //# PRODUCT TEST
+        //#######################################
+
+        [AllowAnonymous]
+        [ApiVersion("1.0")]
+        [HttpGet("/api/v{version:apiVersion}/products/test")]
+        public async Task<ActionResult> HandleTestAsync()
+        {
+            return Ok(new { message = $"Ping {nameof(ProductController)} OK" });
+        }
+
+        //#######################################
+        //# PRODUCT MAIN METHODS
+        //#######################################
+
         [HttpGet("/api/v{version:apiVersion}/products/{id:guid}")]
         public async Task<ActionResult<ProductDto>> HandleGetProductByIdAsync(Guid id,
             CancellationToken cancellationToken = new CancellationToken())

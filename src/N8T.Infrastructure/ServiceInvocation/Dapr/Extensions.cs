@@ -34,6 +34,7 @@ namespace N8T.Infrastructure.ServiceInvocation.Dapr
             int appPort = 5000)
         {
             string appUri = $"http://{appName}:{appPort}";
+            Console.WriteLine($"RestClientUri: {appUri}");
 
             services.AddScoped<InvocationHandler>();
             services.AddRestEaseClient(httpClientApi, appUri, client =>

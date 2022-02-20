@@ -17,10 +17,6 @@
     <PackageReference Include="System.Net.Http.Json" Version="6.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\DataContracts\CoolStore.AppContracts\AppContracts.csproj" Watch="false" />
-  </ItemGroup>
-
   <!--<ItemGroup>
     <Content Update="@(Content)" Watch="false" />
   </ItemGroup>-->
@@ -30,7 +26,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\DataContracts\CoolStore.AppContracts\CoolStore.AppContracts.csproj" />
+    <ProjectReference Include="..\..\DataContracts\AppContracts\AppContracts.csproj" />
+    <ProjectReference Include="..\..\DataContracts\IntegrationEvents\IntegrationEvents.csproj" />
   </ItemGroup>
 
 </Project>

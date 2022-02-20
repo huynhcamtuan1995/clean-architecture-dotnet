@@ -12,7 +12,8 @@
     <ProjectReference Include="..\..\..\src\N8T.Infrastructure.EfCore\N8T.Infrastructure.EfCore.csproj" />
     <ProjectReference Include="..\..\..\src\N8T.Infrastructure.OTel\N8T.Infrastructure.OTel.csproj" />
     <ProjectReference Include="..\..\..\src\N8T.Infrastructure\N8T.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\DataContracts\CoolStore.AppContracts\AppContracts.csproj" />
+    <ProjectReference Include="..\..\DataContracts\AppContracts\AppContracts.csproj" />
+    <ProjectReference Include="..\..\DataContracts\IntegrationEvents\IntegrationEvents.csproj" />
     <ProjectReference Include="..\CustomerService.AppCore\CustomerService.AppCore.csproj" />
   </ItemGroup>
 
