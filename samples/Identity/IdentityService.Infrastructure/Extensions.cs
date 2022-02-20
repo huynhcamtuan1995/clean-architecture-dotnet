@@ -4,7 +4,6 @@ using System.Text;
 using AppContracts.RestApi;
 using IdentityService.AppCore.Core.Models;
 using IdentityService.AppCore.Interfaces;
-using IdentityService.AppCore.UseCases.Commands;
 using IdentityService.Infrastructure.Data;
 using IdentityService.Infrastructure.Implementations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -17,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using N8T.Infrastructure;
+using N8T.Infrastructure.Auth;
 using N8T.Infrastructure.Bus;
 using N8T.Infrastructure.EfCore;
 using N8T.Infrastructure.ServiceInvocation.Dapr;
@@ -51,8 +51,8 @@ namespace IdentityService.Infrastructure
 
             services.AddHttpContextAccessor();
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+            services.AddCustomAuth<AppCoreAnchor>(config,
+                options =>
                 {
                     options.RequireHttpsMetadata = false;
                     options.TokenValidationParameters = new TokenValidationParameters
@@ -64,8 +64,15 @@ namespace IdentityService.Infrastructure
                     };
                 });
 
+
             services.AddAuthorization(options =>
             {
+                options.AddPolicy(JwtBearerDefaults.AuthenticationScheme, policy =>
+                {
+                    policy.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme);
+                    policy.RequireClaim(ClaimTypes.Name);
+                });
+
                 options.AddPolicy("UserRole", policy =>
                 {
                     policy.RequireClaim(ClaimTypes.Role);
