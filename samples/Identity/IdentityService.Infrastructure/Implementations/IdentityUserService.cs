@@ -12,11 +12,15 @@ using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using N8T.Core.Helpers;
+using N8T.Infrastructure.Cache;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace IdentityService.Infrastructure.Implementations
 {
-    public class UserIdentityService : IUserIdentityService
+    public class IdentityUserService : IIdentityUserService
     {
+        private readonly ICacheService<string> _cacheService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly int _expiry;
@@ -24,10 +28,12 @@ namespace IdentityService.Infrastructure.Implementations
         private readonly string _validAudience;
         private readonly string _validIssuer;
 
-        public UserIdentityService(IConfiguration configuration,
+        public IdentityUserService(IConfiguration configuration,
+            ICacheService<string> cacheService,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager)
         {
+            _cacheService = cacheService;
             _userManager = userManager;
             _signInManager = signInManager;
             // change style GetValue<T> to GetSection Value because identity library version conflicts
@@ -41,13 +47,13 @@ namespace IdentityService.Infrastructure.Implementations
         {
             return await _userManager.FindByNameAsync(username);
         }
-
         public async Task<ApplicationUser> GetUserByEmail(string email)
         {
             return await _userManager.FindByEmailAsync(email);
         }
 
-        public async Task<ApplicationUser> RegisterAsync(CustomerDto customerDto)
+        #region register
+        public async Task<(Guid userId, AccessTokenDto accessToken)> RegisterAsync(CustomerDto customerDto)
         {
             string userEmail = customerDto.Email;
 
@@ -62,10 +68,14 @@ namespace IdentityService.Infrastructure.Implementations
             };
 
             IdentityResult registered = await _userManager.CreateAsync(user, customerDto.Password);
-            return registered.Succeeded ? (await GetUserByEmail(userEmail))! : null;
+            return registered.Succeeded
+                ? ((await GetUserByEmail(userEmail))!.Id, await GenerateAccessTokenAsync(user))
+                : default((Guid Id, AccessTokenDto));
         }
+        #endregion
 
-        public async Task<AccessTokenDto> Authenticate(UserLoginDto request)
+        #region login
+        public async Task<AccessTokenDto> AuthenticateAsync(AuthenticateDto request)
         {
             ApplicationUser user = await ValidUserAsync(request.UserName, request.Password);
             if (user == null)
@@ -79,7 +89,6 @@ namespace IdentityService.Infrastructure.Implementations
             await _userManager.UpdateAsync(user);
             return await GenerateAccessTokenAsync(user);
         }
-
         public async Task<ApplicationUser> ValidUserAsync(string username, string password)
         {
             ApplicationUser user = await GetUserByUserName(username);
@@ -96,24 +105,15 @@ namespace IdentityService.Infrastructure.Implementations
             }
 
             SignInResult signInResult =
-                await _signInManager.PasswordSignInAsync(user, password, false, false);
+                await _signInManager.PasswordSignInAsync(user, password, false, true);
             return signInResult.Succeeded ? user : null;
         }
-
-
-
-        public async Task<bool> SignOutAsync(string token)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<AccessTokenDto> GenerateAccessTokenAsync(CustomerDto customer, string role = RoleEnum.User)
         {
             ApplicationUser user = customer.Adapt<ApplicationUser>();
             user.UpdateRole(role);
             return await GenerateAccessTokenAsync(user);
         }
-
         public Task<AccessTokenDto> GenerateAccessTokenAsync(ApplicationUser user)
         {
             DateTime now = DateTime.UtcNow;
@@ -126,7 +126,7 @@ namespace IdentityService.Infrastructure.Implementations
                 //Audience = _validAudience,
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim("UserId", user.Id.ToString()),
+                    new Claim("userid", user.Id.ToString()),
                     new Claim("fullname" , $"{user.FirstName} {user.LastName}"),
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim(ClaimTypes.NameIdentifier, user.Email),
@@ -153,5 +153,21 @@ namespace IdentityService.Infrastructure.Implementations
                 ExpireAt = expireAt.ToString(CultureInfo.InvariantCulture)
             });
         }
+        public Task<AccessTokenDto> RefreshAccessTokenAsync(string token)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
+        #region logout
+        public Task<bool> RevokeAccessTokenAsync(string token)
+        {
+            return Task.FromResult(_cacheService.Set(token, DateTimeHelper.NewSystemDateTime()));
+        }
+        public Task<bool> RevokeRefreshTokenAsync(string token)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
     }
 }

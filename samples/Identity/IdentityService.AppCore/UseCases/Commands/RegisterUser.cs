@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 using AppContracts.Dtos;
 using AppContracts.RestApi;
 using FluentValidation;
-using IdentityService.AppCore.Core.Models;
 using IdentityService.AppCore.Interfaces;
 using Mapster;
 using MediatR;
 using N8T.Core.Domain;
+using N8T.Infrastructure.Auth;
 
 namespace IdentityService.AppCore.UseCases.Commands
 {
@@ -50,37 +50,33 @@ namespace IdentityService.AppCore.UseCases.Commands
 
         internal class Handler : IRequestHandler<Command, ResultModel<AccessTokenDto>>
         {
-            private readonly IUserIdentityService _userIdentityService;
+            private readonly IIdentityUserService _identityUserService;
             private readonly ICustomerApi _customerApi;
 
-            public Handler(IUserIdentityService userIdentityService,
+            public Handler(IIdentityUserService identityUserService,
                 ICustomerApi customerApi)
             {
-                _userIdentityService =
-                    userIdentityService ?? throw new ArgumentNullException(nameof(userIdentityService));
-                _customerApi =
-                    customerApi ?? throw new ArgumentNullException(nameof(customerApi));
+                _identityUserService = identityUserService ?? throw new ArgumentNullException(nameof(identityUserService));
+                _customerApi = customerApi ?? throw new ArgumentNullException(nameof(customerApi));
             }
 
             public async Task<ResultModel<AccessTokenDto>> Handle(Command request,
                 CancellationToken cancellationToken)
             {
                 CustomerDto customerDto = request.Model.Adapt<CustomerDto>();
-                ApplicationUser user = await _userIdentityService.RegisterAsync(customerDto);
-                if (user == null || user.Id == Guid.Empty)
+                (Guid userId, AccessTokenDto accessToken) = await _identityUserService.RegisterAsync(customerDto);
+                if (userId == Guid.Empty)
                 {
                     throw new Exception("Register failed");
                 }
 
-                customerDto.UserId = user.Id;
+                customerDto.UserId = userId;
                 (Guid guid, bool isError, _) = await _customerApi.CreateCustomerAsync(customerDto);
                 if (isError || guid == Guid.Empty)
                 {
                     throw new Exception("Customer create failed");
                 }
 
-                UserLoginDto loginInfo = customerDto.Adapt<UserLoginDto>();
-                AccessTokenDto accessToken = await _userIdentityService.Authenticate(loginInfo);
                 return ResultModel<AccessTokenDto>.Create(accessToken);
             }
         }

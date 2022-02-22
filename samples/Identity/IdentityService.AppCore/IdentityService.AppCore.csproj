@@ -15,11 +15,13 @@
     <PackageReference Include="Mapster" Version="7.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.0-preview.7.21378.6" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.7.2-preview-10803222715" />
+    <PackageReference Include="ServiceStack.Redis" Version="6.0.2" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.10.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\N8T.Core\N8T.Core.csproj" />
+    <ProjectReference Include="..\..\..\src\N8T.Infrastructure\N8T.Infrastructure.csproj" />
     <ProjectReference Include="..\..\DataContracts\AppContracts\AppContracts.csproj" />
     <ProjectReference Include="..\..\DataContracts\IntegrationEvents\IntegrationEvents.csproj" />
   </ItemGroup>

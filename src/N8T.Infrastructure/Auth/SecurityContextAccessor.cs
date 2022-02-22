@@ -3,6 +3,7 @@ using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 
 namespace N8T.Infrastructure.Auth
 {
@@ -16,18 +17,32 @@ namespace N8T.Infrastructure.Auth
         {
             _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        }
 
-        public string UserId
+        }
+        public HttpContext HttpContext => _httpContextAccessor.HttpContext;
+
+        public string UserId => _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        public string Role => _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Role)?.Value;
+
+        public string TokenValue
         {
             get
             {
-                string userId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                return userId;
+                StringValues? token = _httpContextAccessor.HttpContext?.Request?.Headers["Authorization"];
+                return token.ToString()?.Replace("Bearer ", string.Empty);
             }
         }
 
-        public string JwtToken => _httpContextAccessor.HttpContext?.Request?.Headers["Authorization"];
+        public string TokenType
+        {
+            get
+            {
+                StringValues? token = _httpContextAccessor.HttpContext?.Request?.Headers["Authorization"];
+                return token.ToString()?.Split(" ", StringSplitOptions.RemoveEmptyEntries)[0];
+            }
+        }
+
 
         public bool IsAuthenticated
         {
@@ -39,13 +54,5 @@ namespace N8T.Infrastructure.Auth
             }
         }
 
-        public string Role
-        {
-            get
-            {
-                string role = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Role)?.Value;
-                return role;
-            }
-        }
     }
 }

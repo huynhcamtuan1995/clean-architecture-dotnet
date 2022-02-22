@@ -10,36 +10,33 @@ namespace N8T.Infrastructure.Auth
 {
     public static class Extensions
     {
-        public static IServiceCollection AddCustomAuth<TType>(this IServiceCollection services,
+        public static IServiceCollection AddCustomAuth(this IServiceCollection services,
             IConfiguration config,
-            Action<JwtBearerOptions> configureOptions = null,
+            Type[] types,
+            Action<JwtBearerOptions> configureJwtBearer = null,
+            Action<AuthorizationOptions> configureAuthorizations = null,
             Action<IServiceCollection> configureMoreActions = null)
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
                     config.Bind("Auth", options);
-                    configureOptions?.Invoke(options);
+                    configureJwtBearer?.Invoke(options);
                 });
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy(JwtBearerDefaults.AuthenticationScheme, policy =>
-                {
-                    policy.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme);
-                    policy.RequireClaim(ClaimTypes.Name);
-                });
+                configureAuthorizations?.Invoke(options);
             });
 
             services.AddScoped(typeof(IPipelineBehavior<,>), typeof(AuthBehavior<,>));
 
             services.Scan(s => s
-                .FromAssemblyOf<TType>()
+                .FromAssembliesOf(types)
                 .AddClasses(c => c
                     .AssignableTo<IAuthorizationHandler>()).As<IAuthorizationHandler>()
                 .AddClasses(c => c
-                    .AssignableTo<IAuthorizationRequirement>()).As<IAuthorizationRequirement>()
-            );
+                    .AssignableTo<IAuthorizationRequirement>()).As<IAuthorizationRequirement>());
 
             configureMoreActions?.Invoke(services);
 

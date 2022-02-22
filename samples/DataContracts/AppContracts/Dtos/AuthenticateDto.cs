@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AppContracts.Dtos
 {
-    public class UserLoginDto
+    public class AuthenticateDto
     {
         [Required] public string UserName { get; set; }
 

@@ -3,7 +3,7 @@ using MediatR;
 
 namespace N8T.Core.Domain
 {
-    public interface ICommand<T> : IRequest<ResultModel<T>>
+    public interface ICommand<T> : IRequest<ResultModel<T>>, ITxRequest
         where T : notnull
     {
     }
@@ -13,7 +13,7 @@ namespace N8T.Core.Domain
     {
     }
 
-    public interface ICreateCommand<TRequest, TResponse> : ICommand<TResponse>, ITxRequest
+    public interface ICreateCommand<TRequest, TResponse> : ICommand<TResponse>
         where TRequest : notnull
         where TResponse : notnull
     {

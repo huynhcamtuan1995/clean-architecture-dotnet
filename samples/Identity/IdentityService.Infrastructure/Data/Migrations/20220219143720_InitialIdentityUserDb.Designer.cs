@@ -155,7 +155,7 @@ namespace IdentityService.Infrastructure.Data.Migrations
                     b.ToTable("user", "user");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<SimpleSystem.Guid>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -184,7 +184,7 @@ namespace IdentityService.Infrastructure.Data.Migrations
                     b.ToTable("AspNetRoleClaims");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<SimpleSystem.Guid>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -214,7 +214,7 @@ namespace IdentityService.Infrastructure.Data.Migrations
                     b.ToTable("AspNetUserClaims");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<SimpleSystem.Guid>", b =>
                 {
                     b.Property<string>("LoginProvider")
                         .HasColumnType("text")
@@ -242,7 +242,7 @@ namespace IdentityService.Infrastructure.Data.Migrations
                     b.ToTable("AspNetUserLogins");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<SimpleSystem.Guid>", b =>
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("text")
@@ -261,7 +261,7 @@ namespace IdentityService.Infrastructure.Data.Migrations
                     b.ToTable("AspNetUserRoles");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<SimpleSystem.Guid>", b =>
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("text")
@@ -285,7 +285,7 @@ namespace IdentityService.Infrastructure.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<SimpleSystem.Guid>", b =>
                 {
                     b.HasOne("IdentityService.AppCore.Core.Models.ApplicationRole", null)
                         .WithMany()
@@ -295,7 +295,7 @@ namespace IdentityService.Infrastructure.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<SimpleSystem.Guid>", b =>
                 {
                     b.HasOne("IdentityService.AppCore.Core.Models.ApplicationUser", null)
                         .WithMany()
@@ -305,7 +305,7 @@ namespace IdentityService.Infrastructure.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<SimpleSystem.Guid>", b =>
                 {
                     b.HasOne("IdentityService.AppCore.Core.Models.ApplicationUser", null)
                         .WithMany()
@@ -315,7 +315,7 @@ namespace IdentityService.Infrastructure.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<SimpleSystem.Guid>", b =>
                 {
                     b.HasOne("IdentityService.AppCore.Core.Models.ApplicationRole", null)
                         .WithMany()
@@ -332,7 +332,7 @@ namespace IdentityService.Infrastructure.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<SimpleSystem.Guid>", b =>
                 {
                     b.HasOne("IdentityService.AppCore.Core.Models.ApplicationUser", null)
                         .WithMany()

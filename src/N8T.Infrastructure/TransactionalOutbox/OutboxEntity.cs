@@ -10,7 +10,7 @@ namespace N8T.Infrastructure.TransactionalOutbox
     {
         public OutboxEntity()
         {
-            // only for System.Text.Json to deserialized data
+            // only for SimpleSystem.Text.Json to deserialized data
         }
 
         public OutboxEntity(Guid id, DateTime occurredOn, IDomainEvent @event)
