@@ -7,6 +7,7 @@ using N8T.Infrastructure.Controller;
 namespace CustomerService.Application.V1
 {
     [ApiVersion("1.0")]
+    [ApiController]
     public class CustomerController : BaseController
     {
         //#######################################

@@ -160,9 +160,10 @@ namespace IdentityService.Infrastructure.Implementations
         #endregion
 
         #region logout
-        public Task<bool> RevokeAccessTokenAsync(string token)
+        public async Task<bool> RevokeAccessTokenAsync(string token)
         {
-            return Task.FromResult(_cacheService.Set(token, DateTimeHelper.NewSystemDateTime()));
+            await _signInManager.SignOutAsync();
+            return _cacheService.Set(token, DateTimeHelper.NewSystemDateTime());
         }
         public Task<bool> RevokeRefreshTokenAsync(string token)
         {

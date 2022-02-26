@@ -9,6 +9,8 @@ using SettingService.AppCore.UseCases.Queries;
 namespace SettingService.Application.V1
 {
     [ApiVersion("1.0")]
+    [ApiController]
+
     public class SettingController : BaseController
     {
         //#######################################

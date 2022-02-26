@@ -14,6 +14,7 @@ namespace ProductService.Application.V1
 {
     [Authorize("RequireInteractiveUser")]
     [ApiVersion("1.0")]
+    [ApiController]
     public class ProductController : BaseController
     {
         //#######################################

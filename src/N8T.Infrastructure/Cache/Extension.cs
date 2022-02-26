@@ -8,6 +8,7 @@ namespace N8T.Infrastructure.Cache
         public static IServiceCollection AddDefaultCache(this IServiceCollection services,
             Action<IServiceCollection> doMoreActions = null)
         {
+            services.AddMemoryCache();
             services.AddSingleton(typeof(ICacheService<>), typeof(MemoryService<>));
 
             doMoreActions?.Invoke(services);

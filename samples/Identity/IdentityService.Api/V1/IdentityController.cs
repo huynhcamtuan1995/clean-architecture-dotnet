@@ -8,6 +8,7 @@ using N8T.Infrastructure.Controller;
 namespace IdentityService.Api.V1
 {
     [ApiVersion("1.0")]
+    [ApiController]
     public class IdentityController : BaseController
     {
         //#######################################
