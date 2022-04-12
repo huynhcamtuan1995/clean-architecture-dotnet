@@ -55,6 +55,15 @@ namespace N8T.Infrastructure.EfCore
             return await specificationResult.ToListAsync();
         }
 
+        public async Task<bool> UpdateAsync(ISpecification<TEntity> spec, TEntity entity)
+        {
+            TEntity data = await FindOneAsync(spec);
+            _dbContext.Entry(data).CurrentValues.SetValues(entity);
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
+
         public async Task<TEntity> AddAsync(TEntity entity)
         {
             await _dbContext.Set<TEntity>().AddAsync(entity);
@@ -71,7 +80,8 @@ namespace N8T.Infrastructure.EfCore
             await _dbContext.SaveChangesAsync();
         }
 
-        private static IQueryable<TEntity> GetQuery(IQueryable<TEntity> inputQuery,
+        private static IQueryable<TEntity> GetQuery(
+            IQueryable<TEntity> inputQuery,
             ISpecification<TEntity> specification)
         {
             IQueryable<TEntity> query = inputQuery;
@@ -83,7 +93,9 @@ namespace N8T.Infrastructure.EfCore
 
             query = specification.Includes.Aggregate(query, (current, include) => current.Include(include));
 
-            query = specification.IncludeStrings.Aggregate(query, (current, include) => current.Include(include));
+            query = specification.IncludeStrings.Aggregate(
+                query,
+                (current, include) => current.Include(include));
 
             if (specification.OrderBy is not null)
             {
@@ -108,12 +120,14 @@ namespace N8T.Infrastructure.EfCore
             return query;
         }
 
-        private static IQueryable<TEntity> GetQuery(IQueryable<TEntity> inputQuery,
+        private static IQueryable<TEntity> GetQuery(
+            IQueryable<TEntity> inputQuery,
             IGridSpecification<TEntity> specification)
         {
             IQueryable<TEntity> query = inputQuery;
 
-            if (specification.Criterias is not null && specification.Criterias.Count > 0)
+            if (specification.Criterias is not null &&
+                specification.Criterias.Count > 0)
             {
                 Expression<Func<TEntity, bool>> expr = specification.Criterias.First();
                 for (int i = 1; i < specification.Criterias.Count; i++)
@@ -126,7 +140,9 @@ namespace N8T.Infrastructure.EfCore
 
             query = specification.Includes.Aggregate(query, (current, include) => current.Include(include));
 
-            query = specification.IncludeStrings.Aggregate(query, (current, include) => current.Include(include));
+            query = specification.IncludeStrings.Aggregate(
+                query,
+                (current, include) => current.Include(include));
 
             if (specification.OrderBy is not null)
             {

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using N8T.Infrastructure;
 using N8T.Infrastructure.Bus;
 using N8T.Infrastructure.EfCore;
+using N8T.Infrastructure.Logging;
 using N8T.Infrastructure.ServiceInvocation.Dapr;
 using N8T.Infrastructure.Swagger;
 using N8T.Infrastructure.TransactionalOutbox;
@@ -63,6 +64,7 @@ namespace CustomerService.Infrastructure
                 app.UseDeveloperExceptionPage();
             }
 
+            app.CreateLoggerConfiguration(false);
             app.UseCors(CorsName);
             app.UseRouting();
             app.UseCloudEvents();

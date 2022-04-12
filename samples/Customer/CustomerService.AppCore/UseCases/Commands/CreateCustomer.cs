@@ -18,8 +18,6 @@ namespace CustomerService.AppCore.UseCases.Commands
         public record Command : ICreateCommand<CreateCustomerModel, CustomerDto>
         {
             public CreateCustomerModel Model { get; init; } = default(CreateCustomerModel)!;
-
-           
         }
 
         internal class Validator : AbstractValidator<Command>
@@ -74,8 +72,11 @@ namespace CustomerService.AppCore.UseCases.Commands
                     throw new Exception("Country Id is not valid.");
                 }
 
-                Customer customer = Customer.Create(request.Model.FirstName, request.Model.LastName,
-                    request.Model.Email, request.Model.CountryId);
+                Customer customer = Customer.Create(
+                    request.Model.FirstName,
+                    request.Model.LastName,
+                    request.Model.Email,
+                    request.Model.CountryId);
 
                 //customer.AddDomainEvent(new CustomerCreatedIntegrationEvent());
 

@@ -17,7 +17,9 @@ namespace ProductService.AppCore.UseCases.Queries
     {
         public class Query : IListQuery<ListResultModel<ProductDto>>
         {
-            public List<string> Includes { get; init; } = new List<string>(new[] { "Returns", "Code" });
+            public List<string> Includes { get; init; } = new List<string>(
+                Array.Empty<string>());
+
             public List<FilterModel> Filters { get; init; } = new List<FilterModel>();
             public List<string> Sorts { get; init; } = new List<string>();
             public int Page { get; init; } = 1;
@@ -29,10 +31,12 @@ namespace ProductService.AppCore.UseCases.Queries
             public Validator()
             {
                 RuleFor(x => x.Page)
-                    .GreaterThanOrEqualTo(1).WithMessage("Page should at least greater than or equal to 1.");
+                    .GreaterThanOrEqualTo(1)
+                    .WithMessage("Page should at least greater than or equal to 1.");
 
                 RuleFor(x => x.PageSize)
-                    .GreaterThanOrEqualTo(1).WithMessage("PageSize should at least greater than or equal to 1.");
+                    .GreaterThanOrEqualTo(1)
+                    .WithMessage("PageSize should at least greater than or equal to 1.");
             }
         }
 
@@ -46,7 +50,8 @@ namespace ProductService.AppCore.UseCases.Queries
                     productRepository ?? throw new ArgumentNullException(nameof(productRepository));
             }
 
-            public async Task<ResultModel<ListResultModel<ProductDto>>> Handle(Query request,
+            public async Task<ResultModel<ListResultModel<ProductDto>>> Handle(
+                Query request,
                 CancellationToken cancellationToken)
             {
                 if (request == null)
@@ -58,22 +63,26 @@ namespace ProductService.AppCore.UseCases.Queries
 
                 List<Product>? products = await _productRepository.FindAsync(spec);
 
-                IEnumerable<ProductDto> productModels = products.Select(x => new ProductDto
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Active = x.Active,
-                    Cost = x.Cost,
-                    Quantity = x.Quantity,
-                    Created = x.Created,
-                    Updated = x.Updated,
-                    ProductCodeId = x.ProductCodeId
-                });
+                IEnumerable<ProductDto> productModels = products.Select(
+                    x => new ProductDto
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        Active = x.Active,
+                        Cost = x.Cost,
+                        Quantity = x.Quantity,
+                        Created = x.Created,
+                        Updated = x.Updated,
+                        ProductCodeId = x.ProductCodeId
+                    });
 
                 long totalProducts = await _productRepository.CountAsync(spec);
 
                 ListResultModel<ProductDto>? resultModel = ListResultModel<ProductDto>.Create(
-                    productModels.ToList(), totalProducts, request.Page, request.PageSize);
+                    productModels.ToList(),
+                    totalProducts,
+                    request.Page,
+                    request.PageSize);
 
                 return ResultModel<ListResultModel<ProductDto>>.Create(resultModel);
             }

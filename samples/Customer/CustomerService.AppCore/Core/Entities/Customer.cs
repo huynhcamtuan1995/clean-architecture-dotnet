@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using CustomerService.AppCore.Core.Specs;
 using IntegrationEvents.Customer;
 using N8T.Core.Domain;
@@ -29,12 +30,26 @@ namespace CustomerService.AppCore.Core.Entities
             }
         }
 
+        public virtual void AddAmount(decimal amount)
+        {
+            // Check available cards
+            if (GetCreditCardsAvailable().Any())
+            {
+                //DomainEvents.Raise<CustomerChangedEmail>(new CustomerChangedEmail() { Customer = this });
+            }
+        }
+
         public static Customer Create(string firstname, string lastname, string email, Guid countryId)
         {
             return Create(Guid.NewGuid(), firstname, lastname, email, countryId);
         }
 
-        public static Customer Create(Guid id, string firstname, string lastname, string email, Guid countryId)
+        public static Customer Create(
+            Guid id,
+            string firstname,
+            string lastname,
+            string email,
+            Guid countryId)
         {
             if (string.IsNullOrEmpty(firstname))
             {
@@ -73,7 +88,8 @@ namespace CustomerService.AppCore.Core.Entities
 
         public virtual ReadOnlyCollection<CreditCard> GetCreditCardsAvailable()
         {
-            return _creditCards.FindAll(new CreditCardAvailableSpec(DateTime.Today).IsSatisfiedBy).AsReadOnly();
+            return _creditCards.FindAll(new CreditCardAvailableSpec(DateTime.Today).IsSatisfiedBy)
+                .AsReadOnly();
         }
 
         public virtual void Add(CreditCard creditCard)
