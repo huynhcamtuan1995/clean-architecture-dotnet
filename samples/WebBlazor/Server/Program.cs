@@ -24,7 +24,7 @@ namespace Blazor.Server
                 .Enrich.FromLogContext()
                 .WriteTo.Console(
                     outputTemplate:
-                    "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}",
+                    "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} {Level}] [{TraceId}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}",
                     theme: AnsiConsoleTheme.Code)
                 .CreateLogger();
 

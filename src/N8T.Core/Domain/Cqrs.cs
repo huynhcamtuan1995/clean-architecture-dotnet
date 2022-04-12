@@ -13,25 +13,27 @@ namespace N8T.Core.Domain
     {
     }
 
-    public interface ICreateCommand<TRequest, TResponse> : ICommand<TResponse>
+    public interface ICreateCommand<TRequest, TResponse> : ICommand<TResponse>, ITxRequest
         where TRequest : notnull
         where TResponse : notnull
     {
         public TRequest Model { get; init; }
     }
 
-    public interface IUpdateCommand<TRequest, TResponse> : ICommand<TResponse>, ITxRequest
+    public interface IUpdateCommand<TQuery, TRequest, TResponse> : ICommand<TResponse>, ITxRequest
+        where TQuery : notnull
         where TRequest : notnull
         where TResponse : notnull
     {
+        public TQuery Filter { get; init; }
         public TRequest Model { get; init; }
     }
 
-    public interface IDeleteCommand<TId, TResponse> : ICommand<TResponse>
-        where TId : notnull
+    public interface IDeleteCommand<TQuery, TResponse> : ICommand<TResponse>, ITxRequest
+        where TQuery : notnull
         where TResponse : notnull
     {
-        public TId Data { get; init; }
+        public TQuery Filter { get; init; }
     }
 
     public interface IListQuery<TResponse> : IQuery<TResponse>

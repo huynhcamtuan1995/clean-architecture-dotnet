@@ -36,7 +36,7 @@ namespace N8T.Infrastructure.Logging
             TimeSpan timeTaken = timer.Elapsed;
             if (timeTaken.Seconds > 3) // if the request is greater than 3 seconds, then log the warnings
             {
-                _logger.LogWarning("[{Perf-Possible}] The request {X-RequestData} took {TimeTaken} seconds.",
+                _logger.LogWarning("[{Perf-Possible}] The request {X-RequestData} took {TimeTaken} seconds",
                     prefix, typeof(TRequest).Name, timeTaken.Seconds);
             }
 
